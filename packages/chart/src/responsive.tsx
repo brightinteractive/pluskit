@@ -1,5 +1,5 @@
 import * as React from 'react'
-import shallowCompare = require('react-addons-shallow-compare')
+const shallowCompare = require('react-addons-shallow-compare')
 const ContainerDimensions = require('react-container-dimensions')
 
 import { Chart, Surface } from './chart'
