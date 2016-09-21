@@ -1,6 +1,6 @@
 {
   "name": "@damplus/chart",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Composable React+D3 chart elements",
   "main": "lib/es5/index.js",
   "module": "lib/es6/index.js",
