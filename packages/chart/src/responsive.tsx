@@ -20,8 +20,8 @@ export class ResponsiveChart extends React.Component<ResponsiveChartProps, {}> {
     return shallowCompare(this, nextProps, nextState)
   }
 
-  renderChart(dims: { width: number, height: number }) {
-    const { width, height } = dims
+  renderChart(dims: { width: number, height: number, top: number, bottom: number, left: number, right: number }) {
+    const { width, height, left, right, top, bottom } = dims
     const margins = {
       left: this.props.marginLeft || 0,
       right: this.props.marginRight || 0,
@@ -30,11 +30,9 @@ export class ResponsiveChart extends React.Component<ResponsiveChartProps, {}> {
     }
 
     return (
-      <Chart dimensions={{ margins, width, height }}>
+      <Chart dimensions={{ margins, width, height, left, right, top, bottom }}>
         <div style={dims}>
-          <Surface>
-            {this.props.children}
-          </Surface>
+          {this.props.children}
         </div>
       </Chart>
     )

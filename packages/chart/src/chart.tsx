@@ -7,6 +7,10 @@ export type ChartContext = {
 export type ChartDimensions = {
   width: number
   height: number
+  top: number
+  left: number
+  right: number
+  bottom: number
   margins: {
     left: number
     right: number
