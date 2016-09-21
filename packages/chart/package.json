@@ -4,6 +4,7 @@
   "description": "Composable React+D3 chart elements",
   "main": "lib/es5/index.js",
   "module": "lib/es6/index.js",
+  "typings": "lib/es6/index.d.ts",
   "scripts": {
     "postversion": "npm publish",
     "prepublish": "npm run build",
