@@ -46,7 +46,7 @@ export class Axis<T, Datum> {
     }
   }
 
-  keyData(d: Datum, i: number) {
+  datumKey(d: Datum, i: number) {
     return this.key ? this.key(this.get(d)) : i
   }
 
