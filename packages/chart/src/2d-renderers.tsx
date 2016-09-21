@@ -8,6 +8,7 @@ import { Value } from './util'
 
 export interface RendererProps2D<X, Y, Datum> {
   className?: string
+  style?: {}
   data: Datum[]
   xAxis: Axis<X, Datum>
   yAxis: Axis<Y, Datum>
@@ -19,7 +20,7 @@ export class Line<X, Y, Datum> extends React.Component<RendererProps2D<X, Y, Dat
   context: ChartContext
 
   render() {
-    const { data, xAxis, yAxis, curve, className } = this.props
+    const { data, xAxis, yAxis, curve, className, style } = this.props
 
     const x = xAxis.projectedScale(this.context)
     const y = yAxis.projectedScale(this.context)
@@ -29,7 +30,7 @@ export class Line<X, Y, Datum> extends React.Component<RendererProps2D<X, Y, Dat
       .x(d => x(xAxis.get(d)))
       .y(d => y(yAxis.get(d)))
 
-    return <path className={className} d={path(data)} />
+    return <path className={className} style={style} d={path(data)} />
   }
 }
 
@@ -38,7 +39,7 @@ export class Dots<X, Y, Datum> extends React.Component<RendererProps2D<X, Y, Dat
   context: ChartContext
 
   render() {
-    const { data, xAxis, yAxis, className } = this.props
+    const { data, xAxis, yAxis, className, style } = this.props
 
     const x = xAxis.projectedScale(this.context)
     const y = yAxis.projectedScale(this.context)
@@ -48,7 +49,7 @@ export class Dots<X, Y, Datum> extends React.Component<RendererProps2D<X, Y, Dat
       {
         data.map(d =>
           <Value key={xAxis.datumKey(d)}>
-            <circle className={className} cx={x(xAxis.get(d))} cy={y(yAxis.get(d))} />
+            <circle className={className} style={style} cx={x(xAxis.get(d))} cy={y(yAxis.get(d))} />
           </Value>
         )
       }
