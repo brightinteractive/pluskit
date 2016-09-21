@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "noImplicitAny": true,
+    "noEmitOnError": true,
+    "noUnusedLocals": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "allowUnreachableCode": false,
+    "target": "es5",
+    "inlineSourceMap": true,
+    "inlineSources": true,
+    "rootDir": "src",
+    "moduleResolution": "node",
+    "declaration": true
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
