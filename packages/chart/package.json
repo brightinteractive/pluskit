@@ -5,7 +5,10 @@
   "main": "lib/es5/index.js",
   "module": "lib/es6/index.js",
   "scripts": {
-    "prepublish": "sh ../../scripts/build.sh"
+    "postversion": "npm publish",
+    "prepublish": "npm run build",
+    "postpublish": "sh ../../scripts/postpublish.sh",
+    "build": "sh ../../scripts/build.sh"
   },
   "dependencies": {
     "@types/d3-shape": "1.0.5",
