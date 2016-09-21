@@ -8,18 +8,20 @@ export interface TickLabelProps<T> {
   className?: string
   axis: Axis<T, {}>
   formatter: (t: T) => String
+  dx?: number
+  dy?: number
 }
 
 export class TickLabels<T> extends React.Component<TickLabelProps<T>, {}> {
   render() {
-    const { axis, className, formatter } = this.props
+    const { axis, className, dx, dy, formatter } = this.props
     const TickComponent = Ticks as new () => Ticks<T>
 
     return (
       <TickComponent
         axis={axis}
         renderer={({ x, y, value }: TickRenderProps<T>) => (
-          <text className={className} x={x} y={y}>
+          <text className={className} x={x} y={y} dx={dx} dy={dy}>
             {formatter(value)}
           </text>
         )}
