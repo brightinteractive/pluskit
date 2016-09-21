@@ -2,10 +2,10 @@ import * as React from 'react'
 import { Axis } from './axis'
 import { Value } from './util'
 
-export interface SeriesProps<Datum, Value> {
+export interface SeriesProps<Datum> {
   data: Datum[]
-  axis: Axis<Value, Datum>
-  render: (data: Datum[], value: Value) => React.ReactElement<{}>
+  axis: Axis<{}, Datum>
+  render: (data: Datum[], value: string|number) => React.ReactElement<{}>
   spacing?: number
 }
 
@@ -13,7 +13,7 @@ export interface SeriesProps<Datum, Value> {
  * Adjusts the Y position of each child so that equal x,y values aren't
  * rendered on the exact same point
  **/
-export class Series<Datum, Value> extends React.Component<SeriesProps<Datum, Value>, {}> {
+export class Series<Datum> extends React.Component<SeriesProps<Datum>, {}> {
   getSpacing(count: number) {
     const spacing = this.props.spacing || 0
 
@@ -51,7 +51,7 @@ export class Series<Datum, Value> extends React.Component<SeriesProps<Datum, Val
         seriesArray.map((series, i) =>
           <Value key={axis.datumKey(series[0])}>
             <g transform={`translate(0,${i * spacing + offset})`}>
-              {render(series, axis.get(series[0]))}
+              {render(series, axis.datumKey(series[0]))}
             </g>
           </Value>
         )

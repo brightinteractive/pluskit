@@ -46,8 +46,8 @@ export class Dots<X, Y, Datum> extends React.Component<RendererProps2D<X, Y, Dat
     return (
       <g>
       {
-        data.map((d, i) =>
-          <Value key={xAxis.datumKey(d, i)}>
+        data.map(d =>
+          <Value key={xAxis.datumKey(d)}>
             <circle className={className} cx={x(xAxis.get(d))} cy={y(yAxis.get(d))} />
           </Value>
         )
@@ -76,8 +76,8 @@ export class Images<X, Y, Datum> extends React.Component<RendererProps2DImages<X
     return (
       <g>
       {
-        data.map((d, i) =>
-          <Value key={xAxis.datumKey(d, i)}>
+        data.map(d =>
+          <Value key={xAxis.datumKey(d)}>
             <image xlinkHref={getImage(d)} x={x(xAxis.get(d)) - width / 2} y={y(yAxis.get(d)) - height / 2} width={width} height={height} />
           </Value>
         )
