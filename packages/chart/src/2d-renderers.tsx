@@ -8,13 +8,10 @@ import { Value } from './util'
 
 export interface RendererProps2D<X, Y, Datum> {
   className?: string
-  data: Datum[],
-  xAxis: Axis<X>,
-  yAxis: Axis<Y>,
-  getX: (d: Datum) => X,
-  getY: (d: Datum) => Y,
-  curve?: CurveFactory,
-  getKey?: (x: X) => number | string
+  data: Datum[]
+  xAxis: Axis<X, Datum>
+  yAxis: Axis<Y, Datum>
+  curve?: CurveFactory
 }
 
 export class Line<X, Y, Datum> extends React.Component<RendererProps2D<X, Y, Datum>, {}> {
@@ -22,15 +19,15 @@ export class Line<X, Y, Datum> extends React.Component<RendererProps2D<X, Y, Dat
   context: ChartContext
 
   render() {
-    const { data, xAxis, yAxis, getX, getY, curve, className } = this.props
+    const { data, xAxis, yAxis, curve, className } = this.props
 
     const x = xAxis.projectedScale(this.context)
     const y = yAxis.projectedScale(this.context)
 
     const path = line<Datum>()
       .curve(curve || curveLinear)
-      .x(d => x(getX(d)))
-      .y(d => y(getY(d)))
+      .x(d => x(xAxis.get(d)))
+      .y(d => y(yAxis.get(d)))
 
     return <path className={className} d={path(data)} />
   }
@@ -41,7 +38,7 @@ export class Dots<X, Y, Datum> extends React.Component<RendererProps2D<X, Y, Dat
   context: ChartContext
 
   render() {
-    const { data, xAxis, yAxis, getX, getY, getKey, className } = this.props
+    const { data, xAxis, yAxis, className } = this.props
 
     const x = xAxis.projectedScale(this.context)
     const y = yAxis.projectedScale(this.context)
@@ -50,8 +47,8 @@ export class Dots<X, Y, Datum> extends React.Component<RendererProps2D<X, Y, Dat
       <g>
       {
         data.map((d, i) =>
-          <Value key={getKey ? getKey(getX(d)) : i}>
-            <circle className={className} cx={x(getX(d))} cy={y(getY(d))} />
+          <Value key={xAxis.datumKey(d, i)}>
+            <circle className={className} cx={x(xAxis.get(d))} cy={y(yAxis.get(d))} />
           </Value>
         )
       }
@@ -71,7 +68,7 @@ export class Images<X, Y, Datum> extends React.Component<RendererProps2DImages<X
   context: ChartContext
 
   render() {
-    const { data, xAxis, yAxis, getX, getY, getImage, getKey, width, height } = this.props
+    const { data, xAxis, yAxis, getImage, width, height } = this.props
 
     const x = xAxis.projectedScale(this.context)
     const y = yAxis.projectedScale(this.context)
@@ -80,8 +77,8 @@ export class Images<X, Y, Datum> extends React.Component<RendererProps2DImages<X
       <g>
       {
         data.map((d, i) =>
-          <Value key={getKey ? getKey(getX(d)) : i}>
-            <image xlinkHref={getImage(d)} x={x(getX(d)) - width / 2} y={y(getY(d)) - height / 2} width={width} height={height} />
+          <Value key={xAxis.datumKey(d, i)}>
+            <image xlinkHref={getImage(d)} x={x(xAxis.get(d)) - width / 2} y={y(yAxis.get(d)) - height / 2} width={width} height={height} />
           </Value>
         )
       }

@@ -8,7 +8,7 @@
     "noImplicitThis": true,
     "strictNullChecks": true,
     "allowUnreachableCode": false,
-    "target": "es5",
+    "target": "es6",
     "inlineSourceMap": true,
     "inlineSources": true,
     "rootDir": "src",

@@ -5,7 +5,7 @@ import { Axis } from './axis'
 import { Chart } from './chart'
 
 export interface MouseTrackerProps<ScaleValue> {
-  axis: Axis<ScaleValue>,
+  axis: Axis<ScaleValue, {}>,
   onChange: (value?: ScaleValue) => void,
 }
 

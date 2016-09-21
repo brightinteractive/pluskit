@@ -6,7 +6,7 @@ import { Value } from './util'
 
 export interface TickLabelProps<T> {
   className?: string
-  axis: Axis<T>
+  axis: Axis<T, {}>
   formatter: (t: T) => String
 }
 
@@ -31,8 +31,7 @@ export class TickLabels<T> extends React.Component<TickLabelProps<T>, {}> {
 export interface GridLinesProps<T> {
   className?: string
   tickSize?: number
-  axis: Axis<T>
-  formatter: (t: T) => String
+  axis: Axis<T, {}>
 }
 
 export class GridLines<T> extends React.Component<GridLinesProps<T>, {}> {
@@ -65,7 +64,7 @@ export class GridLines<T> extends React.Component<GridLinesProps<T>, {}> {
 
 
 export interface TickProps<T> {
-  axis: Axis<T>
+  axis: Axis<T, {}>
   renderer: TickRenderer<T>,
 }
 

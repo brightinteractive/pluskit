@@ -2,7 +2,7 @@ import * as React from 'react'
 const shallowCompare = require('react-addons-shallow-compare')
 const ContainerDimensions = require('react-container-dimensions')
 
-import { Chart, Surface } from './chart'
+import { Chart } from './chart'
 
 export interface ResponsiveChartProps {
   marginLeft?: number
