@@ -31,6 +31,7 @@ export class Axis<T, Datum> {
     this.getKey = opts.getKey
 
     this.compareData = this.compareData.bind(this)
+    this.inverseCompareData = this.inverseCompareData.bind(this)
     this.equal = this.equal.bind(this)
 
     Object.freeze(this)
@@ -57,6 +58,10 @@ export class Axis<T, Datum> {
 
   compareData(a: Datum, b: Datum) {
     return this.compare(this.get(a), this.get(b))
+  }
+
+  inverseCompareData(a: Datum, b: Datum) {
+    return this.compareData(a, b) * -1
   }
 
   isVertical(): boolean {
