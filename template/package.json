@@ -1,0 +1,32 @@
+{
+  "name": "@damplus/???",
+  "version": "0.0.1",
+  "description": "???",
+  "main": "lib/es5/index.js",
+  "module": "lib/es6/index.js",
+  "typings": "lib/es6/index.d.ts",
+  "scripts": {
+    "postversion": "npm publish",
+    "prepublish": "npm run build",
+    "postpublish": "sh ../../scripts/postpublish.sh",
+    "build": "sh ../../scripts/build.sh"
+  },
+  "dependencies": {
+    "@types/d3-shape": "1.0.5",
+    "@types/react": "0.14.35",
+    "@types/react-addons-shallow-compare": "0.14.17",
+    "@types/react-dom": "0.14.17"
+  },
+  "peerDependencies": {
+    "react": "^15.1.0",
+    "react-dom": "^15.1.0",
+    "react-addons-shallow-compare": "15.1.0"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "6.0.39"
+  }
+}
