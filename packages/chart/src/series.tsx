@@ -1,11 +1,10 @@
 import * as React from 'react'
-import { Axis } from './axis'
 import { Value } from './util'
 
 export interface SeriesProps<Datum> {
   data: Datum[]
-  axis: Axis<{}, Datum>
   render: (data: Datum[], value: string|number) => React.ReactElement<{}>
+  getKey: (datum: Datum) => string | number
   spacing?: number
 }
 
@@ -27,11 +26,11 @@ export class Series<Datum> extends React.Component<SeriesProps<Datum>, {}> {
   }
 
   seriesData() {
-    const { axis } = this.props
+    const { getKey } = this.props
     const groups: { [key: string]: Datum[] } = {}
 
     this.props.data.forEach(d => {
-      const key = axis.datumKey(d)
+      const key = getKey(d)
       groups[key] = groups[key] || []
 
       groups[key].push(d)
@@ -41,7 +40,7 @@ export class Series<Datum> extends React.Component<SeriesProps<Datum>, {}> {
   }
 
   render() {
-    const { axis, render } = this.props
+    const { getKey, render } = this.props
     const seriesArray = this.seriesData()
     const { offset, spacing } = this.getSpacing(seriesArray.length);
 
@@ -49,9 +48,9 @@ export class Series<Datum> extends React.Component<SeriesProps<Datum>, {}> {
       <g>
       {
         seriesArray.map((series, i) =>
-          <Value key={axis.datumKey(series[0])}>
+          <Value key={getKey(series[0])}>
             <g transform={`translate(0,${i * spacing + offset})`}>
-              {render(series, axis.datumKey(series[0]))}
+              {render(series, getKey(series[0]))}
             </g>
           </Value>
         )

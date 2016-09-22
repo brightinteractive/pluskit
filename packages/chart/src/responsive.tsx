@@ -1,6 +1,6 @@
 import * as React from 'react'
 const shallowCompare = require('react-addons-shallow-compare')
-const ContainerDimensions = require('react-container-dimensions')
+const ContainerDimensions = require('react-container-dimensions').default
 
 import { Chart } from './chart'
 

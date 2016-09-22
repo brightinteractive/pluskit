@@ -5,9 +5,9 @@ export interface AxisOpts<T, Datum> {
   orientation: Orientation
   scale: Scale<T>
   get: (d: Datum) => T
+  getKey: (val: T) => number|string
   ticks?: (scale: Scale<T>) => T[]
   compare?: (a: T, b: T) => number
-  key: (val: T) => number|string
 }
 
 export class Axis<T, Datum> {
@@ -16,7 +16,7 @@ export class Axis<T, Datum> {
   ticks: T[]
   get: (d: Datum) => T
   compare: (a: T, b: T) => number
-  key: (val: T) => number|string
+  getKey: (val: T) => number|string
 
   constructor(opts: AxisOpts<T, Datum>) {
     this.orientation = opts.orientation
@@ -28,6 +28,7 @@ export class Axis<T, Datum> {
       if (a > b) return -1
       return 0
     })
+    this.getKey = opts.getKey
 
     this.compareData = this.compareData.bind(this)
     this.equal = this.equal.bind(this)
@@ -47,7 +48,7 @@ export class Axis<T, Datum> {
   }
 
   datumKey(d: Datum) {
-    return this.key(this.get(d))
+    return this.getKey(this.get(d))
   }
 
   equal(a: T, b: T) {
