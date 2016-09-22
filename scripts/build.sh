@@ -15,7 +15,6 @@ build() {
     --declaration \
     --outDir "$dir" \
     --rootDir "src" \
-    --target "$target" \
     --target "$target"
 }
 
