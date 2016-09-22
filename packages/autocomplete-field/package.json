@@ -1,0 +1,33 @@
+{
+  "name": "@damplus/autocomplete-field",
+  "version": "0.0.1",
+  "description": "Adapts a field to render a dropdown menu of possible values",
+  "main": "lib/es5/index.js",
+  "module": "lib/es6/index.js",
+  "typings": "lib/es6/index.d.ts",
+  "scripts": {
+    "postversion": "npm publish",
+    "preversion": "sh ../../scripts/build.sh",
+    "postpublish": "sh ../../scripts/postpublish.sh"
+  },
+  "dependencies": {
+    "@damplus/click-outside": "0.0.4",
+    "classnames": "^2.2.5"
+  },
+  "peerDependencies": {
+    "@types/react": "^0.14.35",
+    "react": "^15.1.0",
+    "react-dom": "^15.1.0",
+    "react-addons-shallow-compare": "^15.1.0"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "ISC",
+  "devDependencies": {
+    "@types/classnames": "^0.0.30",
+    "@types/node": "^6.0.40",
+    "@types/react": "^0.14.35",
+    "@types/react-dom": "^0.14.17"
+  }
+}
