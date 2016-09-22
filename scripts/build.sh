@@ -16,8 +16,7 @@ build() {
     --outDir "$dir" \
     --rootDir "src" \
     --target "$target" \
-    --target "$target" \
-    --project "$root_dir/tsconfig.json"
+    --target "$target"
 }
 
 build "lib/es5" "es5"
