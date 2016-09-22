@@ -1,0 +1,94 @@
+$cell-size: 3.5em;
+$width: 7 * $cell-size;
+$accent-color: #31baff;
+
+.container {
+  text-align: center;
+  position: relative;
+  width: $width;
+  padding: 0.5em;
+
+  cursor: default;
+  user-select: none;
+
+  a {
+    text-decoration: none;
+  }
+}
+
+.controls {
+  display: table;
+  width: $width;
+  padding: 1em 0em;
+
+  > * {
+    display: table-cell;
+    vertical-align: middle;
+  }
+}
+
+.month {
+  font-weight: bold;
+  opacity: 0.8;
+}
+
+.nextMonth,
+.prevMonth {
+  cursor: pointer;
+  width: 2em;
+
+  opacity: 0.8;
+
+  &.disabled {
+    opacity: 0.1;
+    cursor: default;
+  }
+}
+
+.nextMonth:after {
+  content: '▶';
+}
+
+.prevMonth:before {
+  content: '◀';
+}
+
+.grid {
+  display: table;
+}
+
+.heading {
+  display: table-row;
+}
+
+.dayOfWeek {
+  display: table-cell;
+  vertical-align: middle;
+  height: 0.75 * $cell-size;
+}
+
+.week {
+  display: table-row;
+}
+
+.day {
+  display: table-cell;
+
+  width: $cell-size;
+  height: $cell-size;
+
+  vertical-align: middle;
+
+  &.selected {
+    color: white;
+    background-color: $accent-color;
+  }
+
+  &:not(.disabled):not(.selected) {
+    cursor: pointer;
+  }
+
+  &.disabled {
+    opacity: 0.1;
+  }
+}
