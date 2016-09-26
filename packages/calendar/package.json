@@ -1,6 +1,6 @@
 {
   "name": "@damplus/calendar",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "React Calendar Component",
   "main": "lib/es5/index.js",
   "module": "lib/es6/index.js",
