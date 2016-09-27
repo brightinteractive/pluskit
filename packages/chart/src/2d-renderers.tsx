@@ -34,7 +34,7 @@ export class Line<X, Y, Datum> extends React.Component<RendererProps2D<X, Y, Dat
   }
 }
 
-export class Dots<X, Y, Datum> extends React.Component<RendererProps2D<X, Y, Datum>, {}> {
+export class Dots<X, Y, Datum> extends React.Component<RendererProps2D<X, Y, Datum> & { radius: number }, {}> {
   static contextTypes = Chart.childContextTypes
   context: ChartContext
 
@@ -49,7 +49,7 @@ export class Dots<X, Y, Datum> extends React.Component<RendererProps2D<X, Y, Dat
       {
         data.map(d =>
           <Value key={xAxis.datumKey(d)}>
-            <circle className={className} style={style} cx={x(xAxis.get(d))} cy={y(yAxis.get(d))} />
+            <circle className={className} style={style} cx={x(xAxis.get(d))} cy={y(yAxis.get(d))} r={this.props.radius} />
           </Value>
         )
       }
