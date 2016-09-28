@@ -3,8 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "postinstall": "lerna bootstrap",
-    "release": "lerna publish"
+    "start": "start-storybook --port 9001"
   },
   "devDependencies": {
     "lerna": "2.0.0-beta.28",
@@ -12,5 +11,14 @@
     "react-dom": "15.3.2",
     "typescript": "2.0.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@kadira/storybook": "^2.20.0",
+    "css-loader": "^0.25.0",
+    "json-loader": "^0.5.4",
+    "node-sass": "^3.10.0",
+    "normalize.css": "^4.2.0",
+    "sass-loader": "^4.0.2",
+    "style-loader": "^0.13.1",
+    "ts-loader": "^0.8.2"
+  }
 }

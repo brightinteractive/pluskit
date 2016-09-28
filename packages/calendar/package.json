@@ -26,9 +26,10 @@
   ],
   "license": "ISC",
   "devDependencies": {
-    "@types/react-dom": "^0.14.0",
     "@types/classnames": "0.0.30",
     "@types/moment": "2.13.0",
-    "@types/react": "^0.14.0"
+    "@types/node": "^6.0.41",
+    "@types/react": "^0.14.0",
+    "@types/react-dom": "^0.14.0"
   }
 }
