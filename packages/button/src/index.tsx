@@ -15,6 +15,7 @@ export interface ButtonState {
 export interface ButtonTheme {
   root: string
   icon: string
+  iconContainer: string
   text: string
 }
 
@@ -39,7 +40,13 @@ export default class Button<T> extends React.Component<ButtonProps<T>, ButtonSta
     return (
       <button className={theme.root} onClick={this.handleClick}>
         <span className={theme.text}>{children}</span>
-        {iconClass && <i className={css(theme.icon, iconClass)} />}
+        {
+          iconClass && (
+            <div className={theme.iconContainer}>
+              <i className={css(theme.icon, iconClass)} />
+            </div>
+          )
+        }
       </button>
     )
   }
