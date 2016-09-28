@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
-import Calendar from '../src';
+import Calendar from './src';
 
 declare var module: {}
 
@@ -9,6 +9,6 @@ storiesOf('Calendar', module)
     <Calendar
       date={new Date()}
       onChange={action('change')}
-      theme={require('../theme.scss')}
+      theme={require('./theme.scss')}
     />
   ));
