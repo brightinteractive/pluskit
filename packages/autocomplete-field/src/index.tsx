@@ -1,4 +1,5 @@
 import * as React from 'react'
+import * as ReactDOM from 'react-dom'
 import ClickOutside from '@damplus/click-outside'
 const shallowCompare = require('react-addons-shallow-compare')
 
@@ -34,11 +35,16 @@ export interface AutocompleteFieldState {
 */
 export default class AutocompleteField<T> extends React.Component<AutocompleteFieldProps<T>, AutocompleteFieldState> {
   state: AutocompleteFieldState = {}
+  element: Element
 
   componentWillMount() {
     this.handleInput = this.handleInput.bind(this)
     this.handleKeyDown = this.handleKeyDown.bind(this)
     this.handleCancel = this.handleCancel.bind(this)
+  }
+
+  componentDidMount() {
+    this.element = ReactDOM.findDOMNode(this)
   }
 
   shouldComponentUpdate(newProps: AutocompleteFieldProps<T>, newState: AutocompleteFieldState) {
@@ -79,6 +85,10 @@ export default class AutocompleteField<T> extends React.Component<AutocompleteFi
 
   handleCancel() {
     this.setState({ displaySuggestions: false })
+    const inputs = this.element.querySelectorAll('input')
+    for (let i = 0; i < inputs.length; ++i) {
+      inputs[i].blur()
+    }
 
     if (this.props.onDismiss) {
       this.props.onDismiss()
