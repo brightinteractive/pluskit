@@ -1,6 +1,6 @@
 {
   "name": "@damplus/click-outside",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Detect clicks or taps outside the child element",
   "main": "lib/es5/index.js",
   "module": "lib/es6/index.js",
