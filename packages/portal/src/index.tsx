@@ -2,13 +2,13 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 const shallowCompare = require('react-addons-shallow-compare')
 
-export default class Portal<T extends {}> extends React.Component<T, {}> {
+export default class Portal extends React.Component<{}, {}> {
   static counter = 0
 
   portalID = `dp-portal-${++Portal.counter}`
   portalElement: HTMLElement
 
-  shouldComponentUpdate(newProps: T, newState: {}) {
+  shouldComponentUpdate(newProps: {}, newState: {}) {
     return shallowCompare(this, newProps, newState)
   }
 
