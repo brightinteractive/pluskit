@@ -44,7 +44,12 @@ export default class Calendar extends React.Component<CalendarProps, CalendarSta
   }
 
   private currentMonth(): moment.Moment {
-    return this.state.currentMonth ? moment(this.state.currentMonth) : moment()
+    const minDate = moment(this.props.minDate || new Date())
+    const maxDate = moment(this.props.maxDate || new Date())
+
+    return (this.state.currentMonth && moment(this.state.currentMonth))
+    || (this.props.date && moment(this.props.date))
+    || moment.min(maxDate, moment.max(minDate, moment()))
   }
 
   private viewStartDate(): moment.Moment {
