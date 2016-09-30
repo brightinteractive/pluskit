@@ -29,7 +29,7 @@ export default class ClickOutside extends React.Component<ClickOutsideProps, Cli
 
   handleClickOutside(e: MouseEvent) {
     const node = ReactDOM.findDOMNode(this)
-    if (node && node.contains(event.target as any)) {
+    if (node && !node.contains(event.target as any)) {
       this.props.onClickOutside();
       e.preventDefault()
       e.stopPropagation()
