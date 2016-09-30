@@ -15,16 +15,17 @@ export default class Portal extends React.Component<{}, {}> {
   componentDidMount() {
     const p = this.portalID && document.getElementById(this.portalID) || createPortal(this.portalID)
 
-    this.portalElement = p;
-    this.componentDidUpdate();
+    this.portalElement = p
+    this.componentDidUpdate()
   }
 
   componentWillUnmount() {
-    document.body.removeChild(this.portalElement);
+    ReactDOM.unmountComponentAtNode(this.portalElement)
+    document.body.removeChild(this.portalElement)
   }
 
   componentDidUpdate() {
-    ReactDOM.render(<div {...this.props}>{this.props.children}</div>, this.portalElement);
+    ReactDOM.render(<div {...this.props}>{this.props.children}</div>, this.portalElement)
   }
 
   render() {
@@ -33,9 +34,9 @@ export default class Portal extends React.Component<{}, {}> {
 }
 
 function createPortal(portalID: string): HTMLDivElement {
-  const p = document.createElement('div');
-  p.id = portalID;
-  document.body.appendChild(p);
+  const p = document.createElement('div')
+  p.id = portalID
+  document.body.appendChild(p)
 
   return p
 }
