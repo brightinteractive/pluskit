@@ -28,7 +28,7 @@ export default class Portal extends React.Component<{}, {}> {
   }
 
   render() {
-    return null
+    return null as any as React.ReactElement<{}>
   }
 }
 
