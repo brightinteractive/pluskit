@@ -11,7 +11,7 @@
     "postpublish": "sh ../../scripts/postpublish.sh"
   },
   "dependencies": {
-    "@damplus/click-outside": "0.0.4",
+    "@damplus/click-outside": "0.*.*",
     "classnames": "^2.2.5"
   },
   "peerDependencies": {
