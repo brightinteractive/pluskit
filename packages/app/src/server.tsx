@@ -328,6 +328,5 @@ function webpackInstance(opts: RenderOpts, mode: 'client'|'server') {
       ] : []
     )
   }
-  console.log('using', mode, 'config', config)
   return webpack(config)
 }
