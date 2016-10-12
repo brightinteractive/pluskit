@@ -17,8 +17,6 @@ import { App } from './active-route'
 import { RouteMapper } from './matcher'
 import { mountRoutes } from './mount'
 
-const serverFile = 'server.js'
-
 export interface RenderOpts {
   entryPoints: {
     client: string,
@@ -28,6 +26,7 @@ export interface RenderOpts {
   enableMinification: boolean,
   enableHotReload: boolean,
   assetsPrefix: string,
+  buildDir: string,
   snippets: Snippet[],
   verbose?: boolean
 }
@@ -45,23 +44,21 @@ export function create(opts: RenderOpts): Promise<RequestHandler> {
   const clientCompiler = webpackInstance(opts, 'client')
   const serverCompiler = webpackInstance(opts, 'server')
 
-  try {
-    fs.rmdirSync(opts.assetsPrefix)
-  } catch (error) {}
+  if (!opts.enableHotReload) {
+    try {
+      fs.mkdirSync(path.resolve(opts.buildDir))
+    } catch (error) {}
 
-  try {
-    fs.mkdirSync(opts.assetsPrefix)
-  } catch (error) {}
+    try {
+      fs.mkdirSync(path.resolve(opts.assetsPrefix))
+    } catch (error) {}
+  }
 
-  try {
-    fs.unlinkSync(serverFile)
-  } catch (error) {}
-
-  return Promise.all(opts.enableHotReload ? [] : [build(!opts.enableHotReload && clientCompiler),  build(serverCompiler)]).then(() =>
+  return Promise.all([build(!opts.enableHotReload && clientCompiler),  build(opts.enableServerSideRendering && serverCompiler)]).then(() =>
     compose([
       opts.enableHotReload && require('webpack-dev-middleware')(clientCompiler, {
         publicPath: '/',
-        stats: { colors: true },
+        stats: false,
         historyApiFallback: true
       }),
       opts.enableHotReload && require('webpack-hot-middleware')(clientCompiler),
@@ -89,6 +86,11 @@ function pageRenderer(opts: RenderOpts): RequestHandler {
   const headerContents = opts.snippets
     .map(x => x.headContent)
     .filter(x => x)
+    .concat(
+      opts.enableHotReload
+      ? []
+      : ['<link rel="stylesheet" href="/style.css">']
+    )
     .join('\n')
 
   const bodyContents = opts.snippets
@@ -97,7 +99,7 @@ function pageRenderer(opts: RenderOpts): RequestHandler {
     .join('\n')
 
   if (opts.enableServerSideRendering) {
-    const routeModules = require(path.resolve(serverFile)).default
+    const routeModules = require(path.resolve(serverFile(opts))).default
     const mapper = new RouteMapper(routeModules)
 
     return (req: Request, res: Response, next: NextFunction) => {
@@ -205,9 +207,8 @@ function webpackInstance(opts: RenderOpts, mode: 'client'|'server') {
     target: (mode === 'server') ? 'node' : 'web',
     externals: (mode === 'server') ? nodeModules : undefined,
     output: {
-      filename: (mode === 'client') ? 'bundle.js' : serverFile,
-      // chunkFilename: '[name].js',
-      path: (mode === 'client') ? path.resolve(opts.assetsPrefix) : path.dirname(path.resolve(serverFile)),
+      filename: (mode === 'client') ? 'bundle.js' : 'server.js',
+      path: (mode === 'client') ? path.resolve(opts.assetsPrefix) : path.resolve(opts.buildDir),
       publicPath: '/'
     },
     resolve: {
@@ -280,14 +281,14 @@ function webpackInstance(opts: RenderOpts, mode: 'client'|'server') {
         minimize: opts.enableMinification,
         debug: (process.env.NODE_ENV !== 'production'),
         options: {
-        ts: {
-          transpileOnly: true,
-          compilerOptions: {
-            isolatedModules: true,
-            noEmitOnError: false
-          }
-        },
-        postcss: () => [ flexbugs, autoprefixer({ browsers }) ],
+          ts: {
+            transpileOnly: true,
+            compilerOptions: {
+              isolatedModules: true,
+              noEmitOnError: false
+            }
+          },
+          postcss: () => [ flexbugs, autoprefixer({ browsers }) ],
         }
       }),
       new webpack.DefinePlugin(processEnv),
@@ -340,4 +341,8 @@ function webpackInstance(opts: RenderOpts, mode: 'client'|'server') {
   }
 
   return webpack(config)
+}
+
+function serverFile(opts: RenderOpts) {
+  return path.join(opts.buildDir, 'server.js')
 }
