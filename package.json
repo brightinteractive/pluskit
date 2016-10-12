@@ -1,7 +1,7 @@
 {
   "name": "pluskit",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "scripts": {
     "start": "start-storybook --port 9001"
   },
