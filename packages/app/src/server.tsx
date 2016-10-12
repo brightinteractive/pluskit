@@ -29,6 +29,7 @@ export interface RenderOpts {
   enableHotReload: boolean,
   assetsPrefix: string,
   snippets: Snippet[],
+  verbose?: boolean
 }
 
 export interface Snippet {
@@ -278,6 +279,7 @@ function webpackInstance(opts: RenderOpts, mode: 'client'|'server') {
       new webpack.LoaderOptionsPlugin({
         minimize: opts.enableMinification,
         debug: (process.env.NODE_ENV !== 'production'),
+        options: {
         ts: {
           transpileOnly: true,
           compilerOptions: {
@@ -286,6 +288,7 @@ function webpackInstance(opts: RenderOpts, mode: 'client'|'server') {
           }
         },
         postcss: () => [ flexbugs, autoprefixer({ browsers }) ],
+        }
       }),
       new webpack.DefinePlugin(processEnv),
     ].concat(
@@ -328,5 +331,13 @@ function webpackInstance(opts: RenderOpts, mode: 'client'|'server') {
       ] : []
     )
   }
+
+  if (opts.verbose) {
+    const { inspect } = require('util')
+    process.stderr.write(
+      `*** ${mode} webpack config ***\n${inspect(config, { depth: null, colors: true })}\n\n`
+    )
+  }
+
   return webpack(config)
 }

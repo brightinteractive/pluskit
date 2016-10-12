@@ -9,11 +9,12 @@ renderer.create({
     client: './demo/render-client.js',
     server: './demo/render-server.js'
   },
-  enableServerSideRendering: process.env.SERVERSIDE_RENDERING,
-  enableMinification: process.env.MINIFICATION,
-  enableHotReload: !process.env.NO_HOT_RELOAD,
+  enableServerSideRendering: Boolean(process.env.SERVERSIDE_RENDERING),
+  enableMinification: Boolean(process.env.MINIFICATION),
+  enableHotReload: !Boolean(process.env.NO_HOT_RELOAD),
   assetsPrefix,
-  snippets: []
+  snippets: [],
+  verbose: true
 })
 .catch(error => console.error(error))
 .then((renderMiddleware) => {
