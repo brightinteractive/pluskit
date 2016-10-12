@@ -1,0 +1,60 @@
+{
+  "name": "@damplus/app",
+  "version": "0.0.1",
+  "description": "Mini-framework wrapping react/redux/reselect/webpack",
+  "main": "lib/es5/index.js",
+  "module": "lib/es5.modules/index.js",
+  "typings": "lib/es6/index.d.ts",
+  "scripts": {
+    "start": "sh ../../scripts/build.sh && node demo/main",
+    "test": "../../node_modules/.bin/mocha --compilers js:ts-node/register src/**/*.ts",
+    "postversion": "npm publish",
+    "preversion": "sh ../../scripts/build.sh",
+    "postpublish": "sh ../../scripts/postpublish.sh"
+  },
+  "dependencies": {
+    "autoprefixer": "^6.5.0",
+    "compose-middleware": "^2.2.0",
+    "css-loader": "^0.25.0",
+    "es6-promise": "^4.0.5",
+    "extract-text-webpack-plugin": "^2.0.0-beta.4",
+    "file-loader": "^0.9.0",
+    "json-loader": "^0.5.4",
+    "node-sass": "^3.10.1",
+    "normalize.css": "^5.0.0",
+    "postcss-flexbugs-fixes": "^2.0.0",
+    "postcss-loader": "^0.13.0",
+    "react": "^15.1.0",
+    "react-addons-shallow-compare": "^15.1.0",
+    "react-dom": "^15.1.0",
+    "redux": "^3.6.0",
+    "redux-thunk": "^2.1.0",
+    "reselect": "^2.5.4",
+    "route-recognizer": "^0.2.7",
+    "sass-loader": "^4.0.2",
+    "style-loader": "^0.13.1",
+    "ts-loader": "^0.9.0",
+    "url-loader": "^0.5.7",
+    "webpack": "^2.1.0-beta.25",
+    "webpack-dev-middleware": "^1.8.4",
+    "webpack-hot-middleware": "^2.13.0"
+  },
+  "peerDependencies": {
+    "@types/react": "^0.14.35"
+  },
+  "files": [
+    "lib",
+    "*.d.ts"
+  ],
+  "license": "ISC",
+  "devDependencies": {
+    "@types/chai": "^3.4.34",
+    "@types/classnames": "^0.0.30",
+    "@types/lodash": "^4.14.37",
+    "@types/mocha": "^2.2.32",
+    "@types/node": "^6.0.42",
+    "@types/redux": "^3.5.30",
+    "@types/redux-thunk": "^2.1.31",
+    "express": "^4.14.0"
+  }
+}
