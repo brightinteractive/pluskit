@@ -295,7 +295,7 @@ function webpackInstance(opts: RenderOpts, mode: 'client'|'server') {
           new webpack.HotModuleReplacementPlugin(),
           new webpack.NoErrorsPlugin(),
         ] : [
-          new ExtractTextPlugin("style.css", { allChunks: true }),
+          new ExtractTextPlugin({ filename: "style.css", allChunks: true }),
           new webpack.optimize.OccurrenceOrderPlugin(false),
         ]
       ) : []
