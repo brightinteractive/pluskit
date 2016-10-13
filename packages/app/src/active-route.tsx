@@ -7,7 +7,8 @@ import * as url from 'url'
 import { AnyRoute, BindOpts } from './route'
 import { RouteMapper, Match } from './matcher'
 import { mountRoutes, MountedRouteState } from './mount'
-import { LinkTarget } from './link'
+import { LinkTarget, navigate } from './link'
+import { HttpError, NotFound } from './error'
 
 export interface AppProps {
   store: Store<{}>
@@ -45,7 +46,7 @@ export class App extends React.Component<AppProps, AppState> {
 
     const match = mapper.match(route.pathname(params))
     if (!match) {
-      throw Error('Unhandled 404')
+      return Promise.reject(new NotFound())
     }
 
     const addedRoutes = mapper.addedRoutes(routeState, match)
@@ -66,8 +67,12 @@ export class App extends React.Component<AppProps, AppState> {
       instance.mounting = false
       instance.setState({ state: store.getState(), match, queryParams, routeState })
     })
-    .catch(() => {
+    .catch((error: HttpError) => {
       instance.mounting = true
+
+      if (error.redirect) {
+        navigate(error.redirect, { pushState: false })
+      }
     })
   }
 
@@ -83,7 +88,7 @@ export class App extends React.Component<AppProps, AppState> {
     if (!match) return undefined
 
     return {
-      route: mapper.getRoute(match.ids[match.ids.length]),
+      route: mapper.getRoute(match.ids[match.ids.length - 1]),
       params: match.params,
       query: query
     }

@@ -65,7 +65,7 @@ export class Route<InputProps extends {}, DerivedProps extends {}> {
 
   /** Unique identifier for this route */
   routename(): string {
-    return '/' + this.parents().map(x => x.path).join('/')
+    return ('/' + this.parents().map(x => x.path).join('/')).replace(/\/+/g, '/')
   }
 
   /** Full path for this route with route params specified by `param` */

@@ -4,14 +4,14 @@ import { render } from 'react-dom'
 import { GenericStoreEnhancer, createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 
-const qs = require('querystring')
+import * as url from 'url'
+import * as qs from 'querystring'
 
 import { App } from './active-route'
 import { RouteMapper } from './matcher'
 import { mountRoutes } from './mount'
 import { WebpackRequireContext } from './webpack-context'
-import { HttpError } from './error'
-import { navigate } from './link'
+import { HttpError, NotFound } from './error'
 
 export interface ClientOpts {
   routes: WebpackRequireContext
@@ -32,34 +32,43 @@ export default function runClient(opts: ClientOpts) {
     )
   )
 
-  const queryParams = qs.parse(window.location.search.substr(1))
-  const match = mapper.match(window.location.pathname)
-  if (!match) {
-    throw Error('Unhandled 404')
-  }
+  return mountAndRender(window.location.href)
+    .catch((error: HttpError) => {
+      if (typeof error.redirect === 'undefined') return Promise.reject(error)
 
-  mountRoutes({
-    store,
-    mapper,
-    addedRoutes: match.ids,
-    params: match.params,
-    removedRoutes: [],
-    routeState: {},
-    queryParams: qs.parse(window.location.search.substr(1))
-  })
-  .then(state => {
-    render(
-      <App store={store} mapper={mapper} initialMatch={match} initialRouteState={state} initialQueryParams={queryParams} />,
-      document.getElementById('app')
-    )
-  })
-  .catch((error: HttpError) => {
-    if (typeof error.redirect === 'undefined') {
-      throw error
+      const { route, query, params } = error.redirect
+      const pathname = route.pathname(params, query)
+
+      return mountAndRender(pathname).then(() => {
+        history.replaceState({}, undefined, pathname)
+      })
+    })
+
+  function mountAndRender(location: string) {
+    const { pathname, query } = url.parse(location)
+
+    const queryParams = qs.parse(query)
+    const match = mapper.match(pathname || '/')
+    if (!match) {
+      return Promise.reject(new NotFound())
     }
 
-    navigate(error.redirect)
-  })
+    return mountRoutes({
+      store,
+      mapper,
+      addedRoutes: match.ids,
+      params: match.params,
+      removedRoutes: [],
+      routeState: {},
+      queryParams: qs.parse(window.location.search.substr(1))
+    })
+    .then(state => {
+      render(
+        <App store={store} mapper={mapper} initialMatch={match} initialRouteState={state} initialQueryParams={queryParams} />,
+        document.getElementById('app')
+      )
+    })
+  }
 }
 
 function devtoolsCompose(): StoreComposer  {
