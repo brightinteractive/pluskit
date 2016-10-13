@@ -12,6 +12,7 @@ const autoprefixer = require('autoprefixer')
 const flexbugs = require('postcss-flexbugs-fixes')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const { compose } = require('compose-middleware')
+const rimraf = require('rimraf').sync
 
 import { App } from './active-route'
 import { RouteMapper } from './matcher'
@@ -43,6 +44,14 @@ export interface Snippet {
 export function create(opts: RenderOpts): Promise<RequestHandler> {
   const clientCompiler = webpackInstance(opts, 'client')
   const serverCompiler = webpackInstance(opts, 'server')
+
+  try {
+    rimraf(opts.buildDir)
+  } catch (error) {}
+
+  try {
+    rimraf(opts.assetsPrefix)
+  } catch (error) {}
 
   if (!opts.enableHotReload) {
     try {
