@@ -184,9 +184,18 @@ function renderPage(request: Request, opts: RenderOpts, mapper: RouteMapper): Pr
     addedRoutes: match.ids,
     params: match.params,
     removedRoutes: [],
-    routeState: {}
+    routeState: {},
+    queryParams: request.query
   })
-  .then(() => renderToString(<App store={store} mapper={mapper} initialMatch={match} />))
+  .then(routeState => renderToString(
+    <App
+      store={store}
+      mapper={mapper}
+      initialMatch={match}
+      initialRouteState={routeState}
+      initialQueryParams={request.query}
+    />
+  ))
 }
 
 function webpackInstance(opts: RenderOpts, mode: 'client'|'server') {

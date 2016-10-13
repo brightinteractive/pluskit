@@ -4,6 +4,8 @@ import { render } from 'react-dom'
 import { GenericStoreEnhancer, createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 
+const qs = require('querystring')
+
 import { App } from './active-route'
 import { RouteMapper } from './matcher'
 import { mountRoutes } from './mount'
@@ -29,6 +31,7 @@ export default function runClient(opts: ClientOpts) {
     )
   )
 
+  const queryParams = qs.parse(window.location.search.substr(1))
   const match = mapper.match(window.location.pathname)
   if (!match) {
     throw Error('Unhandled 404')
@@ -40,11 +43,12 @@ export default function runClient(opts: ClientOpts) {
     addedRoutes: match.ids,
     params: match.params,
     removedRoutes: [],
-    routeState: {}
+    routeState: {},
+    queryParams: qs.parse(window.location.search.substr(1))
   })
-  .then(() => {
+  .then(state => {
     render(
-      <App store={store} mapper={mapper} initialMatch={match} />,
+      <App store={store} mapper={mapper} initialMatch={match} initialRouteState={state} initialQueryParams={queryParams} />,
       document.getElementById('app')
     )
   })

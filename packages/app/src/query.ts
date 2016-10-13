@@ -3,7 +3,15 @@ import { Selector, createSelector } from 'reselect'
 
 export type Task = (dispatch: Dispatch<{}>, getState: () => {}) => Promise<void> | void
 
+export interface QueryConstructor<T, Query> {
+  new(selector: Selector<any, T>, task: Task): Query
+}
+
 export class Query<T> {
+  static always<T>(value: T): Query<T> {
+    return new Query(() => value, () => {})
+  }
+
   protected selector: Selector<any, T>
   task: Task
 
@@ -14,6 +22,16 @@ export class Query<T> {
 
   select(dispatch: Dispatch<{}>, getState: () => {}): T {
     return this.selector(getState(), { dispatch })
+  }
+
+  pipe<T_, QueryType extends Query<T_>>(Constructor: QueryConstructor<T_, QueryType>, fn: (x: T) => T_): QueryType {
+    return new Constructor(
+      createSelector(
+        this.selector,
+        fn
+      ),
+      this.task
+    )
   }
 
   as<T_>(DomainObject: DomainObjectConstructor<T, T_>): Query<T_> {
@@ -30,77 +48,41 @@ export class Query<T> {
 
 export class Maybe<T> extends Query<T | undefined> {
   required() {
-    return new Query(
-      createSelector(
-        this.selector,
-        (value) => {
-          if (typeof value === 'undefined') {
-            throw new Error('Requried value not found')
-          }
+    return this.pipe(Query, (value) => {
+      if (typeof value === 'undefined') {
+        throw new Error('Requried value not found')
+      }
 
-          return value
-        },
-      ),
-      this.task
-    )
+      return value
+    })
   }
 
   withDefault<Default>(defaultValue: Default): Query<T | Default> {
-    return new Query(
-      createSelector(
-        this.selector,
-        (value) => {
-          if (typeof value === 'undefined') {
-            return defaultValue
-          }
+    return this.pipe(Query,  (value) => {
+      if (typeof value === 'undefined') {
+        return defaultValue
+      }
 
-          return value
-        },
-      ),
-      this.task
-    )
+      return value
+    })
   }
 }
 
 export class Many<T> extends Query<T[]> {
   map<T_>(fn: (xs: T) => T_): Many<T_> {
-    return new Many(
-      createSelector(
-        this.selector,
-        x => x.map(fn)
-      ),
-      this.task
-    )
+    return this.pipe(Many, x => x.map(fn))
   }
 
   filter(fn: (xs: T) => any): Many<T> {
-    return new Many(
-      createSelector(
-        this.selector,
-        x => x.filter(fn)
-      ),
-      this.task
-    )
+    return this.pipe(Many, x => x.filter(fn))
   }
 
   reduce<T_>(fn: (memo: T_, xs: T) => any, start: T_): Query<T_> {
-    return new Query(
-      createSelector(
-        this.selector,
-        x => x.reduce(fn, start)
-      ),
-      this.task
-    )
+    return this.pipe(Query, x => x.reduce(fn, start))
   }
 
   first(): Maybe<T> {
-    return new Maybe(
-      createSelector(
-        this.selector,
-        x => x[0]
-      ),
-      this.task
-    )
+    return this.pipe(Maybe, x => x[0])
   }
 }
 

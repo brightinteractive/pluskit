@@ -2,8 +2,11 @@ import { ReactElement } from 'react'
 import { Reducer } from 'redux'
 import { assign } from 'lodash'
 
+const qs = require('querystring')
+
 import { Query, Task } from './query'
 import { Resource } from './resource'
+import { App } from './active-route'
 
 export function home(path: string = ''): Route<{}, {}> {
   return new Route(path, {})
@@ -11,7 +14,7 @@ export function home(path: string = ''): Route<{}, {}> {
 
 export interface BindOpts<In, Derived, Prereqs, T, Out> {
   prerequisites: (x: Derived & In) => Prereqs
-  query: (params: Prereqs) => Query<T>
+  query: (params: Prereqs, query: { [key: string]: string }) => Query<T>
   bindTo: (val: T) => Out
 }
 
@@ -66,12 +69,19 @@ export class Route<InputProps extends {}, DerivedProps extends {}> {
   }
 
   /** Full path for this route with route params specified by `param` */
-  pathname(routeParams: InputProps): string {
+  pathname(routeParams: InputProps, query?: { [key: string]: string }): string {
     const params = routeParams as any
-    return Object.keys(params).reduce(
+    const base = Object.keys(params).reduce(
       (pathname, key) => pathname.replace(`:${this.dynamicParamLabel(key)}`, params[key]),
       this.routename()
     )
+
+    if (query) {
+      return `${base}?${qs.stringify(query)}`
+
+    } else {
+      return base
+    }
   }
 
   /** Attach a store to this route */
@@ -120,9 +130,10 @@ export class Route<InputProps extends {}, DerivedProps extends {}> {
   route(path: string, params: any = {}): Route<{}, {}> {
     return new Route(path, params, this)
   }
-}
 
-export interface RouteContext {
-  handlePushState(path: string[], params: {}): boolean
-  handleReplaceState(path: string[], params: {}): boolean
+  pushState(params: InputProps, query?: { [key: string]: string }) {
+    App.transition(this, params, query || {}).then(() => {
+      history.pushState({}, undefined, this.pathname(params, query))
+    })
+  }
 }

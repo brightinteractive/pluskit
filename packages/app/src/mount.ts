@@ -1,5 +1,5 @@
 import { Store, combineReducers } from 'redux'
-import { omit, flatMap, assign, compact } from 'lodash'
+import { omit, flatMap, assign, compact, clone } from 'lodash'
 
 import { RouteMapper } from './matcher'
 import { AnyRoute, BindOpts } from './route'
@@ -11,6 +11,7 @@ export interface MountRouteOpts {
   addedRoutes: string[]
   removedRoutes: string[]
   store: Store<{}>
+  queryParams: { [key: string]: string }
 }
 
 export interface MountedRouteState {
@@ -23,7 +24,7 @@ export interface MountedRoute {
   parentRoute?: string
 }
 
-export function mountRoutes({ store, mapper, routeState, addedRoutes, removedRoutes, params }: MountRouteOpts): Promise<MountedRouteState> {
+export function mountRoutes({ store, mapper, routeState, addedRoutes, removedRoutes, params, queryParams }: MountRouteOpts): Promise<MountedRouteState> {
   // Remove the old route objects
   const state = omit<MountedRouteState, any>(routeState, removedRoutes)
 
@@ -31,7 +32,7 @@ export function mountRoutes({ store, mapper, routeState, addedRoutes, removedRou
   addedRoutes.forEach(r => {
     const routeObject = mapper.getRoute(r)
     state[r] = {
-      params,
+      params: clone(params),
       routeObject,
       parentRoute: routeObject.parent && routeObject.parent.routename()
     }
@@ -81,7 +82,7 @@ export function mountRoutes({ store, mapper, routeState, addedRoutes, removedRou
 
     // Dispatch the tasks where we do
     const stepTasks = currentTasks.map(t => {
-      const query = t.binding.query(t.binding.prerequisites(params))
+      const query = t.binding.query(t.binding.prerequisites(params), queryParams)
       if (!query.task) return undefined
 
       return Promise.resolve(query.task((x: any) => store.dispatch(x), () => store.getState()))
@@ -92,7 +93,7 @@ export function mountRoutes({ store, mapper, routeState, addedRoutes, removedRou
     // When all tasks in this stage have completed, recurse into the tasks
     // we didn't previously have prerequisite data for
     return Promise.all(compact<any>(stepTasks)).then(params => {
-      const mergedParams = assign.apply(undefined, params)
+      const mergedParams = assign.apply(undefined, [{}].concat(params))
       return step(remainingTasks, mergedParams)
     })
   }
