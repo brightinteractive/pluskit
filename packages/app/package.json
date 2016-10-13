@@ -1,6 +1,6 @@
 {
   "name": "@damplus/app",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Mini-framework wrapping react/redux/reselect/webpack",
   "main": "lib/es5/index.js",
   "module": "lib/es5.modules/index.js",
