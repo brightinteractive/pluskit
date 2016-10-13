@@ -8,6 +8,7 @@ import { App } from './active-route'
 import { RouteMapper } from './matcher'
 import { mountRoutes } from './mount'
 import { WebpackRequireContext } from './webpack-context'
+import { HttpError } from './error'
 
 export interface ClientOpts {
   routes: WebpackRequireContext
@@ -46,6 +47,13 @@ export default function runClient(opts: ClientOpts) {
       <App store={store} mapper={mapper} initialMatch={match} />,
       document.getElementById('app')
     )
+  })
+  .catch((error: HttpError) => {
+    if (typeof error.redirect === 'undefined') {
+      throw error
+    }
+
+    window.location.pathname = error.redirect
   })
 }
 

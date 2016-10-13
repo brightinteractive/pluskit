@@ -48,9 +48,18 @@ export function mountRoutes({ store, mapper, routeState, addedRoutes, removedRou
     store.replaceReducer(combineReducers(reducerMap))
   }
 
-  // Dispatch the tasks required to load data for the new route
-  const allTasks = flatMap(addedRoutes.map(id => mapper.getRoute(id)), (route: AnyRoute) => route.bindings.map(binding => ({ id: route.routename(), binding })))
-  return step(allTasks, params).then(() => state)
+  // Dispatch the tasks required to initialize the new route
+  return Promise.all(
+      flatMap(
+        addedRoutes, r => mapper.getRoute(r).tasks.map(task => store.dispatch(task))
+      )
+    )
+    .then(() => {
+      // Then step through data dependencies to load data
+      const dataDependencies = flatMap(addedRoutes.map(id => mapper.getRoute(id)), (route: AnyRoute) => route.bindings.map(binding => ({ id: route.routename(), binding })))
+      return step(dataDependencies, params)
+        .then(() => state)
+    })
 
   function step(tasks: BoundRoute[], params: {}): Promise<void> {
     const shouldKeep = (t: BoundRoute) => {
@@ -62,7 +71,7 @@ export function mountRoutes({ store, mapper, routeState, addedRoutes, removedRou
     const currentTasks = tasks.filter(shouldKeep)
     const remainingTasks = tasks.filter(x => !shouldKeep(x))
 
-    if (remainingTasks.length === 0) {
+    if (currentTasks.length === 0 && remainingTasks.length === 0) {
       return Promise.resolve()
     }
 

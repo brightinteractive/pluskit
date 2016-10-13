@@ -1,12 +1,12 @@
 {
   "name": "@damplus/app",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Mini-framework wrapping react/redux/reselect/webpack",
   "main": "lib/es5/index.js",
   "module": "lib/es5.modules/index.js",
   "typings": "lib/es6/index.d.ts",
   "scripts": {
-    "start": "sh ../../scripts/build.sh && node demo/main",
+    "start": "node demo/main",
     "test": "../../node_modules/.bin/mocha --compilers js:ts-node/register src/**/*.ts",
     "postversion": "npm publish",
     "preversion": "sh ../../scripts/build.sh",

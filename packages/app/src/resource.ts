@@ -1,17 +1,8 @@
 import { assign, omit } from 'lodash'
-
 import { createSelector } from 'reselect'
+
 import { Maybe, Many, Task } from './query'
-
-export interface Remote<PrimaryKey, Record, Queries> {
-  query?: (...queries: Queries[]) => Promise<Record[]>
-  get?: (primaryKey: PrimaryKey) => Promise<Record>
-
-  create?: (record: Record) => Promise<PrimaryKey>
-  update?: (record: Record) => Promise<void>
-
-  delete?: (primaryKey: PrimaryKey) => Promise<void>
-}
+import { Remote } from './remote'
 
 export class Resource<Record extends PrimaryKey, PrimaryKey extends {}> {
   protected name: string
@@ -33,7 +24,7 @@ export class Resource<Record extends PrimaryKey, PrimaryKey extends {}> {
   get(key: PrimaryKey): Maybe<Record> {
     return new Maybe(
       createSelector(
-        (state: any) => state[this.name],
+        (state: any) => state[this.name] || {},
         (state: any) => state[this.primaryKey(key)]
       ),
       this.fetch(key)
@@ -43,7 +34,7 @@ export class Resource<Record extends PrimaryKey, PrimaryKey extends {}> {
   getAll(): Many<Record> {
     return new Many(
       createSelector(
-        (state: any) => state[this.name],
+        (state: any) => state[this.name] || {},
         (state: any) => Object.keys(state).map(key => state[key])
       ),
       () => {}

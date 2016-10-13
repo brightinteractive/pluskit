@@ -8,7 +8,7 @@ export class Query<T> {
   task: Task
 
   constructor(selector: Selector<any, T>, task: Task) {
-    this.select = selector
+    this.selector = selector
     this.task = task
   }
 

@@ -27,7 +27,7 @@ export class App extends React.Component<AppProps, AppState> {
     window.onpopstate = this.handlePopState.bind(this)
 
     this.props.store.subscribe(() => {
-      if (typeof this.stateTransition !== 'undefined') {
+      if (typeof this.stateTransition === 'undefined') {
         this.stateTransition = window.setTimeout(() => {
           this.stateTransition = undefined
           this.setState({ state: this.props.store.getState(), match: this.state.match })
