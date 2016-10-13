@@ -1,4 +1,4 @@
-const { home, Resource, Link, Query } = require('../../lib/es5')
+const { home, Resource, Link, parseLinkTarget, Query } = require('../../lib/es5')
 const React = require('react')
 
 const users = new Resource('users', u => u.id)
@@ -19,7 +19,8 @@ const route = home('/')
   .render(({ me, count }) =>
     React.DOM.div({},
       `Hello, ${me.name} ${count}!`,
-      React.createElement(Link, { route, query: { count: count + 1 }, params: {} }, '++')
+      `location: ${JSON.stringify(parseLinkTarget(window.location.href))}`,
+      React.createElement(Link, { target: { route, query: { count: count + 1 }, params: {} } }, '++')
     )
   )
 

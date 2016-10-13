@@ -136,4 +136,10 @@ export class Route<InputProps extends {}, DerivedProps extends {}> {
       history.pushState({}, undefined, this.pathname(params, query))
     })
   }
+
+  replaceState(params: InputProps, query?: { [key: string]: string }) {
+    App.transition(this, params, query || {}).then(() => {
+      history.replaceState({}, undefined, this.pathname(params, query))
+    })
+  }
 }

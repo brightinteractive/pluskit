@@ -1,10 +1,13 @@
 import * as React from 'react'
 import { Store, Dispatch } from 'redux'
 import { assign } from 'lodash'
+import * as qs from 'querystring'
+import * as url from 'url'
 
 import { AnyRoute, BindOpts } from './route'
 import { RouteMapper, Match } from './matcher'
 import { mountRoutes, MountedRouteState } from './mount'
+import { LinkTarget } from './link'
 
 export interface AppProps {
   store: Store<{}>
@@ -68,12 +71,33 @@ export class App extends React.Component<AppProps, AppState> {
     })
   }
 
-  componentDidMount() {
+  static parseRoute(routeString: string): LinkTarget<{}> | undefined {
+    if (!this.instance) throw new Error('No app instance is defined')
+
+    const { mapper } = this.instance.props
+
+    const path = url.parse(routeString).pathname || '/'
+    const query = qs.parse(url.parse(routeString).query)
+
+    const match = mapper.match(path)
+    if (!match) return undefined
+
+    return {
+      route: mapper.getRoute(match.ids[match.ids.length]),
+      params: match.params,
+      query: query
+    }
+  }
+
+  componentWillMount() {
     if (App.instance) {
       throw Error('Only one app instance is suported')
     }
 
     App.instance = this
+  }
+
+  componentDidMount() {
     window.onpopstate = this.handlePopState.bind(this)
 
     this.props.store.subscribe(() => {
