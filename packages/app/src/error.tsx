@@ -1,13 +1,15 @@
+import { LinkTarget } from './link'
+
 export interface HttpError extends Error {
   status?: number
-  redirect?: string
+  redirect?: LinkTarget<{}>
 }
 
 export class Redirect extends Error implements HttpError {
   status: number
-  redirect: string
+  redirect: LinkTarget<{}>
 
-  constructor(location: string, status: number = 302) {
+  constructor(location: LinkTarget<{}>, status: number = 302) {
     super(`${status} redirect required to ${location}`)
     this.status = status
     this.redirect = location

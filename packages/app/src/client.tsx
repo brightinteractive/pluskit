@@ -11,6 +11,7 @@ import { RouteMapper } from './matcher'
 import { mountRoutes } from './mount'
 import { WebpackRequireContext } from './webpack-context'
 import { HttpError } from './error'
+import { navigate } from './link'
 
 export interface ClientOpts {
   routes: WebpackRequireContext
@@ -57,7 +58,7 @@ export default function runClient(opts: ClientOpts) {
       throw error
     }
 
-    window.location.pathname = error.redirect
+    navigate(error.redirect)
   })
 }
 
