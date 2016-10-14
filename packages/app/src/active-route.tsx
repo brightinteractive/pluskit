@@ -125,7 +125,8 @@ export class App extends React.Component<AppProps, AppState> {
   }
 
   handlePopState() {
-    debugger
+    const { route, params, query } = App.parseRoute(window.location.href)!
+    App.transition(route, params, query || {})
   }
 
   render() {
