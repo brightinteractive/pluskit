@@ -3,9 +3,10 @@ import * as React from 'react'
 import { ChartContext } from './chart'
 import { Axis } from './axis'
 import { Chart } from './chart'
+import { AnyScale } from './types'
 
 export interface MouseTrackerProps<ScaleValue> {
-  axis: Axis<ScaleValue, {}>,
+  axis: Axis<ScaleValue, {}, AnyScale<ScaleValue>>,
   onChange: (value?: ScaleValue) => void,
 }
 
@@ -62,7 +63,7 @@ export class MouseTracker<ScaleValue> extends React.Component<MouseTrackerProps<
   }
 }
 
-function closestElementIndex(array: number[], value: number): number {
+function closestElementIndex(array: (number | undefined)[], value: number): number {
   let closestDistance = Infinity
   let closestIndex = -1
 

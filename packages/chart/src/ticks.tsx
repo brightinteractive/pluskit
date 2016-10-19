@@ -3,13 +3,15 @@ import * as React from 'react'
 import { Chart, ChartContext } from './chart'
 import { Axis } from './axis'
 import { Value } from './util'
+import { AnyScale } from './types'
 
 export interface TickLabelProps<T> {
   className?: string
-  axis: Axis<T, {}>
+  axis: Axis<T, {}, AnyScale<T>>
   formatter: (t: T) => String
   dx?: number
   dy?: number
+  align?: 'start'|'end'
 }
 
 export class TickLabels<T> extends React.Component<TickLabelProps<T>, {}> {
@@ -20,11 +22,13 @@ export class TickLabels<T> extends React.Component<TickLabelProps<T>, {}> {
     return (
       <TickComponent
         axis={axis}
-        renderer={({ x, y, value }: TickRenderProps<T>) => (
-          <text className={className} x={x} y={y} dx={dx} dy={dy}>
-            {formatter(value)}
-          </text>
-        )}
+        renderer={({ x, y, value }: TickRenderProps<T>) => {
+          return (
+            <text className={className} x={x} y={y} dx={dx} dy={dy}>
+              {formatter(value)}
+            </text>
+          )
+        }}
       />
     )
   }
@@ -33,7 +37,7 @@ export class TickLabels<T> extends React.Component<TickLabelProps<T>, {}> {
 export interface GridLinesProps<T> {
   className?: string
   tickSize?: number
-  axis: Axis<T, {}>
+  axis: Axis<T, {}, AnyScale<T>>
 }
 
 export class GridLines<T> extends React.Component<GridLinesProps<T>, {}> {
@@ -66,7 +70,7 @@ export class GridLines<T> extends React.Component<GridLinesProps<T>, {}> {
 
 
 export interface TickProps<T> {
-  axis: Axis<T, {}>
+  axis: Axis<T, {}, AnyScale<T>>
   renderer: TickRenderer<T>,
 }
 
@@ -84,9 +88,19 @@ export class Ticks<T> extends React.Component<TickProps<T>, {}> {
   static contextTypes = Chart.childContextTypes
   context: ChartContext
 
-  render() {
-    const { renderer, axis } = this.props
+  renderValue(value: T, scale: AnyScale<T>) {
+    const position = scale(value)
+    if (typeof position === 'undefined') return undefined
 
+    return this.props.renderer(
+      this.props.axis.isVertical()
+      ? { value, x: 0, y: position }
+      : { value, x: position, y: 0 }
+    )
+  }
+
+  render() {
+    const { axis } = this.props
     const scale = axis.projectedScale(this.context)
 
     return (
@@ -95,11 +109,7 @@ export class Ticks<T> extends React.Component<TickProps<T>, {}> {
         axis.ticks.map(value =>
           <Value key={String(value)}>
           {
-            renderer(
-              axis.isVertical()
-              ? { value, x: 0, y: scale(value) }
-              : { value, x: scale(value), y: 0 }
-            )
+            this.renderValue(value, scale)
           }
           </Value>
         )

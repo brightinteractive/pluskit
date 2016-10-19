@@ -1,28 +1,33 @@
-import { Orientation, Scale } from './types'
-import { ChartContext } from './chart'
+import { assign } from 'lodash'
 
-export interface AxisOpts<T, Datum> {
+import { Orientation, AnyScale } from './types'
+import { ChartContext } from './chart'
+import { withDefault } from './util'
+
+export interface AxisOpts<T, Datum, Scale extends AnyScale<T>> {
   orientation: Orientation
-  scale: Scale<T>
+  scale: Scale
   get: (d: Datum) => T
   getKey: (val: T) => number|string
-  ticks?: (scale: Scale<T>) => T[]
+  ticks?: (scale: Scale) => T[]
   compare?: (a: T, b: T) => number
+  ascending?: boolean
 }
 
-export class Axis<T, Datum> {
+export class Axis<T, Datum, Scale extends AnyScale<T>> {
   orientation: Orientation
-  scale: Scale<T>
+  scale: Scale
   ticks: T[]
   get: (d: Datum) => T
   compare: (a: T, b: T) => number
   getKey: (val: T) => number|string
+  ascending: boolean
 
-  constructor(opts: AxisOpts<T, Datum>) {
+  constructor(opts: AxisOpts<T, Datum, Scale>) {
     this.orientation = opts.orientation
     this.scale = opts.scale
     this.get = opts.get
-    this.ticks = opts.ticks ? opts.ticks(opts.scale) : opts.scale.ticks()
+    this.ticks = opts.ticks && opts.ticks(opts.scale) || (opts.scale.ticks && opts.scale.ticks()) || []
     this.compare = opts.compare || ((a, b) => {
       if (a < b) return 1
       if (a > b) return -1
@@ -33,18 +38,29 @@ export class Axis<T, Datum> {
     this.compareData = this.compareData.bind(this)
     this.inverseCompareData = this.inverseCompareData.bind(this)
     this.equal = this.equal.bind(this)
+    this.ascending = withDefault(opts.ascending, !this.isVertical())
 
     Object.freeze(this)
   }
 
-  projectedScale(chart: ChartContext): Scale<T> {
+  withScale<S extends AnyScale<T>>(scale: S) {
+    return new Axis<T, Datum, S>(assign({}, this, { scale, ticks: () => this.ticks }))
+  }
+
+  projectedScale(chart: ChartContext): Scale {
     const { chartDimensions } = chart
 
     if (this.isVertical()) {
-      return this.scale.copy().range([chartDimensions.height, 0])
+      return this.scale.copy().range([
+        this.ascending ? 0 : chartDimensions.height,
+        this.ascending ? chartDimensions.height : 0,
+      ])
 
     } else {
-      return this.scale.copy().range([0, chartDimensions.width])
+      return this.scale.copy().range([
+        this.ascending ? 0 : chartDimensions.width,
+        this.ascending ? chartDimensions.width : 0,
+      ])
     }
   }
 
@@ -71,20 +87,6 @@ export class Axis<T, Datum> {
         return true
 
       case 'top':
-      case 'bottom':
-        return false
-
-      default: throw new Error(`Invalid orientation ${this.orientation}`)
-    }
-  }
-
-  isAscending(): boolean {
-    switch (this.orientation) {
-      case 'left':
-      case 'top':
-        return true
-
-      case 'right':
       case 'bottom':
         return false
 

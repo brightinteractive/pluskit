@@ -1,6 +1,6 @@
 export { Surface } from './chart'
 export { ResponsiveChart } from './responsive'
-export { Line, Images, Dots } from './2d-renderers'
+export { Line, Images, Dots, Bar, Values } from './2d-renderers'
 export { TickLabels, GridLines, Ticks } from './ticks'
 export { Axis } from './axis'
 export { MouseTracker } from './mouse-tracker'

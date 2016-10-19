@@ -1,11 +1,13 @@
 import * as React from 'react'
+
 import { Axis } from './axis'
 import { Chart, ChartContext } from './chart'
+import { AnyScale, ContinuousScale } from './types'
 import { Value } from './util'
 
 export interface TooltipProps<X, Y, Datum> {
-  x: Axis<X, Datum>
-  y: Axis<Y, Datum>
+  x: Axis<X, Datum, AnyScale<X>>
+  y: Axis<Y, Datum, ContinuousScale<Y>>
   reservedSize: number
   data: Datum[]
   value: X

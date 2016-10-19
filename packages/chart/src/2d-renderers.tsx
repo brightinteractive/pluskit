@@ -1,21 +1,29 @@
 import * as React from 'react'
 import { CurveFactory, line, curveLinear } from 'd3-shape'
+import { ScaleLinear } from 'd3-scale'
 
 import { ChartContext } from './chart'
 import { Axis } from './axis'
 import { Chart } from './chart'
-import { Value } from './util'
+import { Value, normalizeRect, withDefault } from './util'
+import { DiscreteScale, ContinuousScale, isDiscrete } from './types'
 
-export interface RendererProps2D<X, Y, Datum> {
+export type ConinuousScale = ScaleLinear<number, number>
+
+export interface RendererPropsBase<Datum> {
   className?: string
   style?: {}
   data: Datum[]
-  xAxis: Axis<X, Datum>
-  yAxis: Axis<Y, Datum>
+}
+
+
+export interface LineProps<X, Y, Datum> extends RendererPropsBase<Datum> {
+  xAxis: Axis<X, Datum, ContinuousScale<X>>
+  yAxis: Axis<Y, Datum, ContinuousScale<Y>>
   curve?: CurveFactory
 }
 
-export class Line<X, Y, Datum> extends React.Component<RendererProps2D<X, Y, Datum>, {}> {
+export class Line<X, Y, Datum> extends React.Component<LineProps<X, Y, Datum>, {}> {
   static contextTypes = Chart.childContextTypes
   context: ChartContext
 
@@ -34,7 +42,86 @@ export class Line<X, Y, Datum> extends React.Component<RendererProps2D<X, Y, Dat
   }
 }
 
-export class Dots<X, Y, Datum> extends React.Component<RendererProps2D<X, Y, Datum> & { radius: number }, {}> {
+
+export interface BarProps<X, Y, Datum> extends RendererPropsBase<Datum> {
+  xAxis: Axis<X, Datum, DiscreteScale<X>>
+  yAxis: Axis<Y, Datum, ContinuousScale<Y>>
+  spacing: number
+}
+
+export class Bar<X, Y, Datum> extends React.Component<BarProps<X, Y, Datum>, {}> {
+  static contextTypes = Chart.childContextTypes
+  context: ChartContext
+
+  render() {
+    const { data, xAxis, yAxis, spacing, className, style } = this.props
+
+    const x = xAxis.projectedScale(this.context)
+    const y = yAxis.projectedScale(this.context)
+    const width = x.bandwidth() - spacing
+
+    if (xAxis.isVertical()) {
+      return (
+        <g>
+        {
+          data.map(d => {
+            return (
+              <Value key={xAxis.datumKey(d)}>
+                <rect
+                  className={className}
+                  style={style}
+                  {
+                    ...normalizeRect({
+                      x: y(y.domain()[0]),
+                      y: withDefault(x(xAxis.get(d)), NaN),
+                      width: y(yAxis.get(d)) - y(y.domain()[0]),
+                      height: width
+                    })
+                  }
+                />
+              </Value>
+            )
+          })
+        }
+        </g>
+      )
+    } else {
+      return (
+        <g>
+        {
+          data.map(d => {
+            return (
+              <Value key={xAxis.datumKey(d)}>
+                <rect
+                  className={className}
+                  style={style}
+                  {
+                    ...normalizeRect({
+                      x: withDefault(x(xAxis.get(d)), NaN),
+                      y: y(y.domain()[0]),
+                      width: width,
+                      height: y(yAxis.get(d)) - y(y.domain()[0])
+                    })
+                  }
+                />
+              </Value>
+            )
+          })
+        }
+        </g>
+      )
+    }
+  }
+}
+
+
+export interface DotsProps<X, Y, Datum> extends RendererPropsBase<Datum> {
+  xAxis: Axis<X, Datum, ContinuousScale<X>>
+  yAxis: Axis<Y, Datum, ContinuousScale<Y>>
+  radius: number
+}
+
+export class Dots<X, Y, Datum> extends React.Component<DotsProps<X, Y, Datum>, {}> {
   static contextTypes = Chart.childContextTypes
   context: ChartContext
 
@@ -58,13 +145,81 @@ export class Dots<X, Y, Datum> extends React.Component<RendererProps2D<X, Y, Dat
   }
 }
 
-export interface RendererProps2DImages<X, Y, Datum> extends RendererProps2D<X, Y, Datum> {
-  getImage(d: Datum): string
+
+export interface ValuesProps<X, Y, Datum> extends RendererPropsBase<Datum> {
+  xAxis: Axis<X, Datum, ContinuousScale<X> | DiscreteScale<X>>
+  yAxis: Axis<Y, Datum, ContinuousScale<Y>>
+  formatter: (d: Datum) => React.ReactNode
+  dx?: number|string
+  dy?: number|string
+}
+
+export class Values<X, Y, Datum> extends React.Component<ValuesProps<X, Y, Datum>, {}> {
+  static contextTypes = Chart.childContextTypes
+  context: ChartContext
+
+  render() {
+    const { className, style, data, xAxis, yAxis, formatter, dx, dy } = this.props
+
+    const x = xAxis.projectedScale(this.context)
+    const y = yAxis.projectedScale(this.context)
+
+    if (xAxis.isVertical()) {
+      return (
+        <g>
+        {
+          data.map(d =>
+            <Value key={xAxis.datumKey(d)}>
+              <text
+                dx={dx}
+                dy={dy}
+                className={className}
+                style={style}
+                x={y(yAxis.get(d))}
+                y={x(xAxis.get(d)) + (isDiscrete(x) ? (x.bandwidth() * 0.5) : 0)}
+              >
+                {formatter(d)}
+              </text>
+            </Value>
+          )
+        }
+        </g>
+      )
+    } else {
+      return (
+        <g>
+        {
+          data.map(d =>
+            <Value key={xAxis.datumKey(d)}>
+              <text
+                dx={dx}
+                dy={dy}
+                className={className}
+                style={style}
+                x={x(xAxis.get(d)) + (isDiscrete(x) ? (x.bandwidth() * 0.5) : 0)}
+                y={y(yAxis.get(d))}
+              >
+                {formatter(d)}
+              </text>
+            </Value>
+          )
+        }
+        </g>
+      )
+    }
+  }
+}
+
+
+export interface ImagesProps<X, Y, Datum> extends RendererPropsBase<Datum> {
+  xAxis: Axis<X, Datum, ContinuousScale<X>>
+  yAxis: Axis<Y, Datum, ContinuousScale<Y>>
+  getImage: (d: Datum) => string
   width: number
   height: number
 }
 
-export class Images<X, Y, Datum> extends React.Component<RendererProps2DImages<X, Y, Datum>, {}> {
+export class Images<X, Y, Datum> extends React.Component<ImagesProps<X, Y, Datum>, {}> {
   static contextTypes = Chart.childContextTypes
   context: ChartContext
 
