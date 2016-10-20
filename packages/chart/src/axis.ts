@@ -16,6 +16,7 @@ export interface AxisOpts<T, Datum, Scale extends AnyScale<T>> {
 
 export class Axis<T, Datum, Scale extends AnyScale<T>> {
   orientation: Orientation
+  ancestorScales?: Scale[]
   scale: Scale
   ticks: T[]
   get: (d: Datum) => T

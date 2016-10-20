@@ -24,6 +24,12 @@ const yAxisV = new Chart.Axis({
   orientation: 'left',
   scale: scaleLinear().domain([0, 150]),
   get: ({ y1 }: Datum) => y1,
+  getKey: (y: number) => y,
+})
+const y2AxisV = new Chart.Axis({
+  orientation: 'left',
+  scale: scaleLinear().domain([0, 150]),
+  get: ({ y2 }: Datum) => y2,
   getKey: (y: number) => y
 })
 const xAxisH = new Chart.Axis({
@@ -37,6 +43,12 @@ const yAxisH = new Chart.Axis({
   orientation: 'top',
   scale: scaleLinear().domain([0, 150]),
   get: ({ y1 }: Datum) => y1,
+  getKey: (y: number) => y
+})
+const y2AxisH = new Chart.Axis({
+  orientation: 'top',
+  scale: scaleLinear().domain([0, 150]),
+  get: ({ y2 }: Datum) => y2,
   getKey: (y: number) => y
 })
 
@@ -110,12 +122,86 @@ storiesOf('Chart', module)
       </Chart.ResponsiveChart>
     </Container>
   ))
+  .add('Stacked Vertical Bars', () => (
+    <Container>
+    <Chart.ResponsiveChart marginLeft={50} marginBottom={50}>
+      <Chart.Surface>
+        <Chart.Stack
+          data={data}
+          stacks={[
+            { fill: 'orange', axis: yAxisV },
+            { fill: 'steelblue', axis: y2AxisV }
+          ]}
+          render={
+            (data, { fill, axis }) => (
+              <g>
+                <Bar
+                  xAxis={xAxisV.withScale(barsScale)}
+                  yAxis={axis}
+                  data={data}
+                  style={{ fill }}
+                  spacing={1}
+                />,
+                <Values
+                  xAxis={xAxisV.withScale(barsScale)}
+                  yAxis={axis}
+                  data={data}
+                  style={{ textAnchor: 'middle', fill: 'white' }}
+                  formatter={(d: Datum) => String(axis.get(d))}
+                  dy="1em"
+                />
+              </g>
+            )
+          }
+        />
+        </Chart.Surface>
+      </Chart.ResponsiveChart>
+    </Container>
+  ))
+  .add('Stacked Horizontal Bars', () => (
+    <Container flipped>
+    <Chart.ResponsiveChart marginLeft={50} marginBottom={50}>
+      <Chart.Surface>
+        <Chart.Stack
+          data={data}
+          stacks={[
+            { fill: 'orange', axis: yAxisH },
+            { fill: 'steelblue', axis: y2AxisH }
+          ]}
+          render={
+            (data, { fill, axis }) => (
+              <g>
+                <Bar
+                  data={data}
+                  style={{ fill }}
+                  xAxis={xAxisH.withScale(barsScale)}
+                  yAxis={axis}
+                  spacing={1}
+                />
+                <Values
+                  xAxis={xAxisH.withScale(barsScale)}
+                  yAxis={axis}
+                  data={data}
+                  formatter={(d: Datum) => String(axis.get(d))}
+                  style={{ textAnchor: 'end', fill: 'white' }}
+                  dx="-0.25em"
+                  dy="0.33em"
+                />
+              </g>
+            )
+          }
+        />
+        </Chart.Surface>
+      </Chart.ResponsiveChart>
+    </Container>
+  ))
 
 const Container = ({ flipped, children }: { flipped?: boolean, children?: React.ReactChild }) => (
   <div>
     <div style={ flipped ? { width: 320, height: 400 } : { width: 530, height: 240 }}>
       {children}
     </div>
-    {data.map(d => d.y1).join(', ')}
+    <p><strong>y1:</strong> {data.map(d => d.y1).join(', ')}</p>
+    <p><strong>y2:</strong> {data.map(d => d.y2).join(', ')}</p>
   </div>
 )
