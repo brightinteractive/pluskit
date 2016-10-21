@@ -1,13 +1,13 @@
 {
   "name": "@damplus/chart",
-  "version": "1.3.2",
+  "version": "1.3.4",
   "description": "Composable React+D3 chart elements",
   "main": "lib/es5/index.js",
   "module": "lib/es6/index.js",
   "typings": "lib/es6/index.d.ts",
   "scripts": {
+    "preversion": "npm run build",
     "postversion": "npm publish",
-    "prepublish": "npm run build",
     "postpublish": "sh ../../scripts/postpublish.sh",
     "build": "sh ../../scripts/build.sh"
   },
