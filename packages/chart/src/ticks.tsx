@@ -59,10 +59,10 @@ export class GridLines<T> extends React.Component<GridLinesProps<T>, {}> {
 
     function path({ x, y }: { x: number, y: number }) {
       if (axis.isVertical()) {
-        return `m ${axis.isAscending() ? -tickSize / 2 : 0} ${y} l ${width + tickSize} ${0}`
+        return `m ${axis.ascending ? -tickSize / 2 : 0} ${y} l ${width + tickSize} ${0}`
 
       } else {
-        return `m ${x} ${axis.isAscending() ? -tickSize / 2 : 0} l ${0} ${height + tickSize}`
+        return `m ${x} ${axis.ascending ? -tickSize / 2 : 0} l ${0} ${height + tickSize}`
       }
     }
   }
