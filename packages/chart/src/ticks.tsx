@@ -3,20 +3,21 @@ import * as React from 'react'
 import { Chart, ChartContext } from './chart'
 import { Axis } from './axis'
 import { Value } from './util'
-import { AnyScale } from './types'
+import { AnyScale, isDiscrete } from './types'
 
 export interface TickLabelProps<T> {
   className?: string
+  style?: {}
   axis: Axis<T, {}, AnyScale<T>>
   formatter: (t: T) => String
-  dx?: number
-  dy?: number
+  dx?: number | string
+  dy?: number | string
   align?: 'start'|'end'
 }
 
 export class TickLabels<T> extends React.Component<TickLabelProps<T>, {}> {
   render() {
-    const { axis, className, dx, dy, formatter } = this.props
+    const { axis, style, className, dx, dy, formatter } = this.props
     const TickComponent = Ticks as new () => Ticks<T>
 
     return (
@@ -24,7 +25,7 @@ export class TickLabels<T> extends React.Component<TickLabelProps<T>, {}> {
         axis={axis}
         renderer={({ x, y, value }: TickRenderProps<T>) => {
           return (
-            <text className={className} x={x} y={y} dx={dx} dy={dy}>
+            <text style={style} className={className} x={x} y={y} dx={dx} dy={dy}>
               {formatter(value)}
             </text>
           )
@@ -92,10 +93,12 @@ export class Ticks<T> extends React.Component<TickProps<T>, {}> {
     const position = scale(value)
     if (typeof position === 'undefined') return undefined
 
+    const offset = isDiscrete(scale) ? scale.bandwidth() * (this.props.axis.ascending ? 0.5 : -0.5) : 0
+
     return this.props.renderer(
       this.props.axis.isVertical()
-      ? { value, x: 0, y: position }
-      : { value, x: position, y: 0 }
+      ? { value, x: 0, y: position + offset }
+      : { value, x: position + offset, y: 0 }
     )
   }
 

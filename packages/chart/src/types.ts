@@ -2,7 +2,7 @@ export interface DataAccessor<Datum, Value> {
   (d: Datum): Value
 }
 
-export interface AnyScale<T> {
+export interface Scale<T> {
   (data: T): number | undefined
   domain(): T[]
   copy(): this
@@ -10,13 +10,15 @@ export interface AnyScale<T> {
   ticks?: () => T[]
 }
 
-export interface ContinuousScale<T> extends AnyScale<T> {
+export interface ContinuousScale<T> extends Scale<T> {
   (data: T): number
 }
 
-export interface DiscreteScale<T> extends AnyScale<T> {
+export interface DiscreteScale<T> extends Scale<T> {
   bandwidth: () => number
 }
+
+export type AnyScale<T> = ContinuousScale<T> | DiscreteScale<T>
 
 export function isContinuous<T>(s: ContinuousScale<T> | DiscreteScale<T>): s is ContinuousScale<T> {
   return typeof (s as any).bandwidth === 'undefined'

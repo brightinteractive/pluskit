@@ -18,7 +18,8 @@ const xAxisV = new Chart.Axis({
   orientation: 'bottom',
   scale: scaleLinear().domain([0, 20]),
   get: ({ x }: Datum) => x,
-  getKey: (x: number) => x
+  getKey: (x: number) => x,
+  ticks: () => _.times(20)
 })
 const yAxisV = new Chart.Axis({
   orientation: 'left',
@@ -37,7 +38,8 @@ const xAxisH = new Chart.Axis({
   scale: scaleLinear().domain([0, 20]),
   get: ({ x }: Datum) => x,
   getKey: (x: number) => x,
-  ascending: true
+  ascending: true,
+  ticks: () => _.times(20)
 })
 const yAxisH = new Chart.Axis({
   orientation: 'top',
@@ -59,6 +61,7 @@ const barsScale = scaleBand<number>()
 const Line = Chart.Line as new() => Chart.Line<number, number, Datum>
 const Bar = Chart.Bar as new() => Chart.Bar<number, number, Datum>
 const Values = Chart.Values as new () => Chart.Values<number, number, Datum>
+const TickLabels = Chart.TickLabels as new () => Chart.TickLabels<number>
 
 storiesOf('Chart', module)
   .add('Simple Line', () => (
@@ -79,6 +82,12 @@ storiesOf('Chart', module)
     <Container>
       <Chart.ResponsiveChart marginLeft={50} marginBottom={50}>
         <Chart.Surface>
+          <TickLabels
+            axis={xAxisV.withScale(barsScale)}
+            style={{ textAnchor: 'middle' }}
+            dy="1em"
+            formatter={String}
+          />
           <Bar
             data={data}
             style={{ fill: 'steelblue' }}
@@ -102,6 +111,12 @@ storiesOf('Chart', module)
     <Container flipped>
       <Chart.ResponsiveChart marginLeft={50} marginBottom={50}>
         <Chart.Surface>
+          <TickLabels
+            axis={xAxisH.withScale(barsScale)}
+            style={{ textAnchor: 'end' }}
+            dy="0.35em"
+            formatter={String}
+          />
           <Bar
             data={data}
             style={{ fill: 'steelblue' }}
