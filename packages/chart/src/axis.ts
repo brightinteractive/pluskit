@@ -55,13 +55,13 @@ export class Axis<T, Datum, Scale extends AnyScale<T>> {
       return this.scale.copy().range([
         this.ascending ? 0 : chartDimensions.height,
         this.ascending ? chartDimensions.height : 0,
-      ])
+      ]) as Scale
 
     } else {
       return this.scale.copy().range([
         this.ascending ? 0 : chartDimensions.width,
         this.ascending ? chartDimensions.width : 0,
-      ])
+      ]) as Scale
     }
   }
 

@@ -38,6 +38,8 @@ export class TickLabels<T> extends React.Component<TickLabelProps<T>, {}> {
 export interface GridLinesProps<T> {
   className?: string
   tickSize?: number
+  fillChart?: boolean
+  style?: {}
   axis: Axis<T, {}, AnyScale<T>>
 }
 
@@ -46,24 +48,34 @@ export class GridLines<T> extends React.Component<GridLinesProps<T>, {}> {
   context: ChartContext
 
   render() {
-    const { width, height } = this.context.chartDimensions
-    const { axis, className } = this.props
+    const { width, height, margins } = this.context.chartDimensions
+    const { axis, className, fillChart, style } = this.props
     const tickSize = this.props.tickSize || 0
     const TicksComponent = Ticks as new () => Ticks<T>
 
     return (
       <TicksComponent
         axis={axis}
-        renderer={(location => <path className={className} d={path(location)} />)}
+        renderer={(location => <path className={className} style={style} d={path(location)} />)}
       />
     )
 
     function path({ x, y }: { x: number, y: number }) {
-      if (axis.isVertical()) {
-        return `m ${axis.ascending ? -tickSize / 2 : 0} ${y} l ${width + tickSize} ${0}`
+      if (fillChart) {
+        if (axis.isVertical()) {
+          return `m ${-margins.left} ${y} l ${width + margins.left + margins.right} ${0}`
+
+        } else {
+          return `m ${x} ${-margins.top} l ${0} ${height + margins.top + margins.bottom}`
+        }
 
       } else {
-        return `m ${x} ${axis.ascending ? -tickSize / 2 : 0} l ${0} ${height + tickSize}`
+        if (axis.isVertical()) {
+          return `m ${axis.ascending ? -tickSize / 2 : 0} ${y} l ${width + tickSize} ${0}`
+
+        } else {
+          return `m ${x} ${axis.ascending ? -tickSize / 2 : 0} l ${0} ${height + tickSize}`
+        }
       }
     }
   }

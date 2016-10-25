@@ -62,6 +62,7 @@ const Line = Chart.Line as new() => Chart.Line<number, number, Datum>
 const Bar = Chart.Bar as new() => Chart.Bar<number, number, Datum>
 const Values = Chart.Values as new () => Chart.Values<number, number, Datum>
 const TickLabels = Chart.TickLabels as new () => Chart.TickLabels<number>
+const GridLines = Chart.GridLines as new () => Chart.GridLines<number>
 
 storiesOf('Chart', module)
   .add('Simple Line', () => (
@@ -87,6 +88,11 @@ storiesOf('Chart', module)
             style={{ textAnchor: 'middle' }}
             dy="1em"
             formatter={String}
+          />
+          <GridLines
+            fillChart
+            axis={yAxisV}
+            style={{ stroke: 'lightgrey', strokeWidth: 1 }}
           />
           <Bar
             data={data}
