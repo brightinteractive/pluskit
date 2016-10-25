@@ -150,6 +150,7 @@ export interface ValuesProps<X, Y, Datum> extends RendererPropsBase<Datum> {
   xAxis: Axis<X, Datum, ContinuousScale<X> | DiscreteScale<X>>
   yAxis: Axis<Y, Datum, ContinuousScale<Y>>
   formatter: (d: Datum) => React.ReactNode
+  requiredSpace?: number
   dx?: number|string
   dy?: number|string
 }
@@ -159,10 +160,17 @@ export class Values<X, Y, Datum> extends React.Component<ValuesProps<X, Y, Datum
   context: ChartContext
 
   render() {
-    const { className, style, data, xAxis, yAxis, formatter, dx, dy } = this.props
+    const { className, style, data, xAxis, yAxis, formatter, requiredSpace, dx, dy } = this.props
 
     const x = xAxis.projectedScale(this.context)
     const y = yAxis.projectedScale(this.context)
+
+    // Distance between projected position for value and the x axis
+    const availableSpace = (d: Datum) => Math.abs(y(yAxis.get(d)) - y(y.domain()[0]))
+
+    // Render only if we have enough space to draw the value between its projected
+    // position and the x axis (or we don't care about that)
+    const shouldRender = (d: Datum) => (typeof requiredSpace === 'undefined') || availableSpace(d) > requiredSpace
 
     if (xAxis.isVertical()) {
       return (
@@ -178,7 +186,7 @@ export class Values<X, Y, Datum> extends React.Component<ValuesProps<X, Y, Datum
                 x={y(yAxis.get(d))}
                 y={x(xAxis.get(d)) + (isDiscrete(x) ? (x.bandwidth() * 0.5) : 0)}
               >
-                {formatter(d)}
+                {shouldRender(d) && formatter(d)}
               </text>
             </Value>
           )
@@ -199,7 +207,7 @@ export class Values<X, Y, Datum> extends React.Component<ValuesProps<X, Y, Datum
                 x={x(xAxis.get(d)) + (isDiscrete(x) ? (x.bandwidth() * 0.5) : 0)}
                 y={y(yAxis.get(d))}
               >
-                {formatter(d)}
+                {shouldRender(d) && formatter(d)}
               </text>
             </Value>
           )

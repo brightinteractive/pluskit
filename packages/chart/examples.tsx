@@ -108,6 +108,7 @@ storiesOf('Chart', module)
             formatter={(d: Datum) => d.y1}
             style={{ textAnchor: 'middle', fill: 'white' }}
             dy="1em"
+            requiredSpace={15}
           />
         </Chart.Surface>
       </Chart.ResponsiveChart>
