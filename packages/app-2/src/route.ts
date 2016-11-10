@@ -17,22 +17,26 @@ export class Route<R extends MountRequest> implements RouteProps<R> {
     assign(this, props)
   }
 
-  use<R2 extends MountRequest>(m: Middleware<MountRequest, R2>) {
-    return new Route({
+  use<R2>(m: Middleware<R, R2>) {
+    return new Route<R & R2>({
       path: this.path,
       middleware: compose(this.middleware, m)
     })
   }
 
   subroute(subpath: string): Route<R>
-  subroute<Params>(subpath: string, getParams: (params: { [key: string]: string }) => Params): Route<R & { pathParams: Params }>
-  subroute(subpath: string, getParams?: (params: any) => any) {
-    return new Route({
+  subroute<Params>(subpath: string, getParams: (params: { [key: string]: string }) => Params): Route<R & Params>
+  subroute(subpath: string, getParams?: (params: any) => any): any {
+    const subroute = new Route({
       path: path.join(this.path, subpath),
       middleware: this.middleware
     })
 
-    // [todo] - Validate params
+    if (!getParams) {
+      return subroute
+    }
+
+    return subroute.use((req, next) => next(getParams(req.pathParams)))
   }
 }
 

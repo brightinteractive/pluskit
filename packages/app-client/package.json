@@ -1,6 +1,6 @@
 {
-  "name": "@damplus/app",
-  "version": "0.5.0",
+  "name": "@damplus/app-client",
+  "version": "0.4.1",
   "description": "Mini-framework wrapping react/redux/reselect/webpack",
   "main": "lib/es5/index.js",
   "module": "lib/es5.modules/index.js",
@@ -13,12 +13,8 @@
     "postpublish": "sh ../../scripts/postpublish.sh"
   },
   "dependencies": {
+    "@damplus/app": "file:///Users/cdevereux/pluskit/packages/app-2",
     "querystring": "^0.2.0",
-    "redux": "^3.6.0",
-    "redux-thunk": "^2.1.0",
-    "reselect": "^2.5.4",
-    "route-recognizer": "^0.2.7",
-    "url": "^0.11.0",
     "xstream": "^7.0.0"
   },
   "peerDependencies": {
@@ -39,9 +35,6 @@
     "@types/react": "^0.14.35",
     "@types/react-addons-test-utils": "^0.14.15",
     "@types/react-dom": "^0.14.18",
-    "@types/redux": "^3.5.30",
-    "@types/redux-thunk": "^2.1.31",
-    "@types/route-recognizer": "0.0.27",
-    "@types/whatwg-fetch": "0.0.32"
+    "@types/route-recognizer": "0.0.27"
   }
 }

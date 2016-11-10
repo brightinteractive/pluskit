@@ -1,5 +1,5 @@
 {
-  "name": "@damplus/app",
+  "name": "@damplus/app-server",
   "version": "0.4.1",
   "description": "Mini-framework wrapping react/redux/reselect/webpack",
   "main": "lib/es5/index.js",
@@ -12,38 +12,40 @@
     "preversion": "sh ../../scripts/build.sh",
     "postpublish": "sh ../../scripts/postpublish.sh"
   },
+  "bin": {
+    "bundle-application": "lib/es5/build.js"
+  },
   "dependencies": {
-    "autoprefixer": "^6.5.0",
+    "@damplus/app": "file:///Users/cdevereux/pluskit/packages/app-2",
+    "@types/colors": "^0.6.33",
+    "@types/glob": "^5.0.30",
+    "@types/yargs": "^6.3.0",
+    "autoprefixer": "^6.5.1",
+    "colors": "^1.1.2",
     "compose-middleware": "^2.2.0",
     "css-loader": "^0.25.0",
-    "es6-promise": "^4.0.5",
-    "extract-text-webpack-plugin": "^2.0.0-beta.4",
+    "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.9.0",
-    "json-loader": "^0.5.4",
-    "node-sass": "^3.10.1",
-    "normalize.css": "^5.0.0",
+    "glob": "^7.1.1",
+    "node-sass": "^3.11.2",
     "postcss-flexbugs-fixes": "^2.0.0",
-    "postcss-loader": "^0.13.0",
+    "postcss-loader": "^1.1.0",
     "querystring": "^0.2.0",
-    "react": "^15.1.0",
-    "react-addons-shallow-compare": "^15.1.0",
-    "react-dom": "^15.1.0",
-    "redux": "^3.6.0",
-    "redux-thunk": "^2.1.0",
-    "reselect": "^2.5.4",
-    "rimraf": "^2.5.4",
-    "route-recognizer": "^0.2.7",
+    "resolve": "^1.1.7",
     "sass-loader": "^4.0.2",
     "style-loader": "^0.13.1",
-    "ts-loader": "^0.9.0",
-    "url": "^0.11.0",
+    "ts-loader": "^1.0.0",
     "url-loader": "^0.5.7",
-    "webpack": "^2.1.0-beta.25",
+    "webpack": "^1.13.3",
     "webpack-dev-middleware": "^1.8.4",
-    "webpack-hot-middleware": "^2.13.0"
+    "webpack-hot-middleware": "^2.13.2",
+    "xstream": "^7.0.0",
+    "yargs": "^6.3.0"
   },
   "peerDependencies": {
-    "@types/react": "^0.14.35"
+    "@types/react": "^0.14.35",
+    "react": "^15.1.0",
+    "react-dom": "^15.3.2"
   },
   "files": [
     "lib",
@@ -53,11 +55,13 @@
   "devDependencies": {
     "@types/chai": "^3.4.34",
     "@types/classnames": "^0.0.30",
+    "@types/express": "^4.0.33",
     "@types/lodash": "^4.14.37",
     "@types/mocha": "^2.2.32",
     "@types/node": "^6.0.42",
-    "@types/redux": "^3.5.30",
-    "@types/redux-thunk": "^2.1.31",
-    "express": "^4.14.0"
+    "@types/react": "^0.14.35",
+    "@types/react-addons-test-utils": "^0.14.15",
+    "@types/react-dom": "^0.14.18",
+    "@types/route-recognizer": "0.0.27"
   }
 }

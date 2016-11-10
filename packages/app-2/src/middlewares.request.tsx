@@ -1,8 +1,11 @@
-// import * as React from 'react'
-// import { assign } from 'lodash'
-// import { Stream } from 'xstream'
+import { assign } from 'lodash'
 
-// import { mapResponse } from './response'
-// import { MountRequest } from './request'
-// import { Middleware } from './middleware'
-// import { toStream } from './util'
+import { MountRequest } from './request'
+import { Middleware, NextFn } from './middleware'
+
+export type RequestFn<Required, Emitted> = (req: Required) => (Emitted) | Promise<Emitted>
+
+export function requestProps<Required, Emitted>(fn: RequestFn<Required, Emitted>): Middleware<Required, Emitted> {
+  return (req: Required & MountRequest, next: NextFn<Required & Emitted & MountRequest>) =>
+    Promise.resolve(fn(req)).then(emitted => next(assign({}, req, emitted)))
+}

@@ -14,11 +14,12 @@ export interface MountRender {
   status?: number
 
   /** Page title */
-  title: string
+  title: Stream<string>
 
   /** Stream of dom values */
-  body: Stream<ReactElement<{}>>
+  body?: Stream<ReactElement<{}>>
 }
+
 
 export interface MountRedirect {
   state: 'redirect'
@@ -27,7 +28,18 @@ export interface MountRedirect {
   status?: number
 
   /** Location to redirect to */
-  location: Transition<{}> | string
+  location: Transition<{}>
+}
+
+
+/**
+ * Terminate the middleware sequence
+ */
+export function defaultResponse(): MountResponse {
+  return {
+    state: 'render',
+    title: Stream.from([''])
+  }
 }
 
 export function mapResponse(fn: (r: MountRender) => MountResponse): (r: MountResponse) => MountResponse {
