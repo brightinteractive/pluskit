@@ -16,6 +16,7 @@
     "bundle-application": "lib/es5/build.js"
   },
   "dependencies": {
+    "@damplus/app": "^0.6.1",
     "autoprefixer": "^6.5.1",
     "colors": "^1.1.2",
     "compose-middleware": "^2.2.0",
@@ -38,7 +39,7 @@
     "yargs": "^6.3.0"
   },
   "peerDependencies": {
-    "@damplus/app": "^0.6.0",
+    "@damplus/app": "^0.6.2",
     "@types/react": "^0.14.35",
     "react": "^15.1.0",
     "react-dom": "^15.3.2"

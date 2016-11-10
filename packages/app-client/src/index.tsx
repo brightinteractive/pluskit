@@ -73,7 +73,11 @@ export function start(params: MountParams): Promise<React.ReactElement<{}>> {
   }
 
   const route = matchRoute(params.path)
-  const req = createRequest(route)
+  const req = createRequest({
+    route: unpackRouteDeclaration(route.handler),
+    params: route.params,
+    queryParams: route.queryParams
+  })
 
   return unpackRouteDeclaration(route.handler).middleware(req, terminate()).then(response => {
     if (response.state === 'render') {
@@ -161,7 +165,11 @@ export class Client extends React.Component<ClientProps, ClientState> {
   }
 
   performTransition(target: Transition<{}>, replaceState?: boolean): Promise<void> {
-    const request = createRequest(target)
+    const request = createRequest({
+      route: unpackRouteDeclaration(target.handler),
+      params: target.params,
+      queryParams: target.queryParams
+    })
     const transitionID = uniqueId('transition')
     this.transitionID = transitionID
 

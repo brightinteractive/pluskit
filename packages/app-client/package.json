@@ -13,11 +13,12 @@
     "postpublish": "sh ../../scripts/postpublish.sh"
   },
   "dependencies": {
+    "@damplus/app": "^0.6.1",
     "querystring": "^0.2.0",
     "xstream": "^7.0.0"
   },
   "peerDependencies": {
-    "@damplus/app": "^0.6.1",
+    "@damplus/app": "^0.6.2",
     "@types/react": "^0.14.35",
     "react": "^15.1.0"
   },

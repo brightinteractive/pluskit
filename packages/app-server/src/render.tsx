@@ -32,6 +32,7 @@ export function render(params: MountParams): Promise<RenderOutput> {
   }
 
   const req = createRequest({
+    route: route.handler,
     params: route.params,
     queryParams: qs.parse(params.query)
   })
