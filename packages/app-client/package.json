@@ -17,6 +17,7 @@
     "xstream": "^7.0.0"
   },
   "peerDependencies": {
+    "@damplus/app": "^0.6.1",
     "@types/react": "^0.14.35",
     "react": "^15.1.0"
   },
