@@ -1,8 +1,16 @@
+import { Route } from './route'
+
 export interface QueryParams {
   [key: string]: string[] | string | undefined
 }
 
 export interface MountRequest {
+  /**
+   * The route being mounted
+   */
+  route: Route<MountRequest>
+
+
   /** Query parameters in the url */
   queryParams: QueryParams
 
@@ -16,13 +24,15 @@ export interface MountRequest {
 }
 
 export interface RequestParams {
+  route: Route<MountRequest>
   params: {}
   queryParams?: {}
 }
 
-export function createRequest({ params, queryParams }: RequestParams): MountRequest {
+export function createRequest({ route, params, queryParams }: RequestParams): MountRequest {
   return {
+    route: route,
     queryParams: queryParams || {},
-    pathParams: params,
+    pathParams: params
   }
 }
