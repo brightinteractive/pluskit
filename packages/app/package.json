@@ -33,7 +33,6 @@
     "@types/node": "^6.0.42",
     "@types/react": "^0.14.35",
     "@types/react-addons-test-utils": "^0.14.15",
-    "@types/react-dom": "^0.14.18",
-    "@types/whatwg-fetch": "0.0.32"
+    "@types/react-dom": "^0.14.18"
   }
 }

@@ -9,11 +9,12 @@ export interface HTTPResource<T> {
 }
 
 export interface HTTPResourceParams<T> {
+  client(url: string, opts?: RequestInit): Promise<Response>
   url: string
   validateResponse: (x: {}) => T
 }
 
-export function createResource<T>({ url, validateResponse }: HTTPResourceParams<T>): HTTPResource<T> {
+export function createResource<T>({ url, validateResponse, client }: HTTPResourceParams<T>): HTTPResource<T> {
   const data = Stream.createWithMemory<T | undefined>()
   const getData = () =>fetch(url)
     .then(validateStatus)
@@ -28,7 +29,7 @@ export function createResource<T>({ url, validateResponse }: HTTPResourceParams<
 
     reload: getData,
     put(x: T) {
-      fetch(url, {
+      client(url, {
           method: 'PUT',
           body: JSON.stringify(x)
         })
@@ -36,7 +37,7 @@ export function createResource<T>({ url, validateResponse }: HTTPResourceParams<
         .then(() => data.shamefullySendNext(x))
     },
     delete() {
-      fetch(url, {
+      client(url, {
         method: 'DELETE'
       })
       .then(validateStatus)
