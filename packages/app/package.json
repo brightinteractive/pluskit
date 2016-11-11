@@ -1,6 +1,6 @@
 {
   "name": "@damplus/app",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "Streams-based react web framework",
   "main": "lib/es5/index.js",
   "module": "lib/es5.modules/index.js",
