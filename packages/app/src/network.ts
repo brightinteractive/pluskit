@@ -20,7 +20,7 @@ export interface HTTPResourceParams<T> {
 
 export function createResource<T>({ url, validateResponse, client }: HTTPResourceParams<T>): HTTPResource<T> {
   const data = Stream.createWithMemory<T | undefined>()
-  const getData = () =>fetch(url)
+  const getData = () =>client(url)
     .then(validateStatus)
     .then(r => r.json())
     .then(validateResponse)
