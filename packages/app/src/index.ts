@@ -7,4 +7,4 @@ export { Transition, transition$, requestTransition, stringifyTransition, Link }
 export { Middleware, NextFn } from './middleware'
 export { render, renderContainer, renderTitle } from './middlewares.rendering'
 export { requestProps } from './middlewares.request'
-export { HTTPResource, createResource } from './network'
+export { HTTPResource, HttpClient, createResource } from './network'

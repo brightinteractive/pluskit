@@ -1,5 +1,9 @@
 import { Stream } from 'xstream'
 
+export interface HttpClient {
+  (url: string, opts?: RequestInit): Promise<Response>
+}
+
 export interface HTTPResource<T> {
   data: Stream<T | undefined>
 
@@ -9,7 +13,7 @@ export interface HTTPResource<T> {
 }
 
 export interface HTTPResourceParams<T> {
-  client(url: string, opts?: RequestInit): Promise<Response>
+  client: HttpClient
   url: string
   validateResponse: (x: {}) => T
 }
