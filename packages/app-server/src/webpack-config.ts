@@ -57,7 +57,7 @@ export function webpackConfig(opts: WebpackOpts): {} {
           loader: 'ts-loader',
         },
         {
-          test: /\.scss$/,
+          test: /\.s[ac]ss$/,
           loader: (
             opts.extractStyles
             ? ExtractTextPlugin.extract(scssLoader)
