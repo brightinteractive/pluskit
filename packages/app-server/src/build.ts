@@ -22,7 +22,7 @@ const browserConfig = webpackConfig({
   debug: false,
   devserver: false,
   entry: clientSource[0],
-  extractStyles: false,
+  extractStyles: true,
   includedModules: [],
   minify: false,
   outDir: path.join(outDir, 'public'),
