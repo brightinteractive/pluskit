@@ -26,12 +26,6 @@ export function webpackConfig(opts: WebpackOpts): {} {
     Object.keys(process.env).map(key => ['process.env.' + key, JSON.stringify(process.env[key])])
   )
 
-  const scssLoader = [
-    'css-loader?' + ['localIdentName=[local]__[hash:base64:4]', 'modules', 'importLoaders=1', 'sourceMap'].join('&'),
-    'postcss-loader',
-    'sass-loader'
-  ].join('!');
-
   const config = {
     devtool: opts.devserver ? 'module-source-map' : undefined,
     target: opts.target,
@@ -54,22 +48,22 @@ export function webpackConfig(opts: WebpackOpts): {} {
       loaders: [
         {
           test: /\.tsx?$/,
-          loader: 'ts-loader',
+          loader: 'ts',
         },
         {
           test: /\.s[ac]ss$/,
-          loader: (
-            opts.extractStyles
-            ? ExtractTextPlugin.extract(scssLoader)
-            : `style-loader!${scssLoader}`
-          )
+          loader: ExtractTextPlugin.extract('style', [
+            'css?' + ['localIdentName=[local]__[hash:base64:4]', 'modules', 'importLoaders=1', 'sourceMap'].join('&'),
+            'postcss',
+            'sass'
+          ].join('!'))
         },
         {
           test: /\.css$/,
           loader: (
             opts.extractStyles
-            ? ExtractTextPlugin.extract('css-loader!postcss-loader')
-            : 'style-loader!css-loader!postcss-loader'
+            ? ExtractTextPlugin.extract('css!postcss')
+            : 'style!css!postcss'
           )
         },
         {
@@ -89,7 +83,7 @@ export function webpackConfig(opts: WebpackOpts): {} {
         },
         {
           test: /\.json$/,
-          loader: 'json-loader'
+          loader: 'json'
         }
       ],
     },
