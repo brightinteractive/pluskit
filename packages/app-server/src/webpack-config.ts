@@ -97,7 +97,7 @@ export function webpackConfig(opts: WebpackOpts): {} {
     plugins: [
       new webpack.DefinePlugin(processEnv),
       ...conditional(opts.extractStyles, [
-        new ExtractTextPlugin({ filename: "style.css", allChunks: true }),
+        new ExtractTextPlugin(undefined, 'style.css'),
       ]),
       new webpack.optimize.OccurrenceOrderPlugin(false),
       ...conditional(opts.devserver, [
