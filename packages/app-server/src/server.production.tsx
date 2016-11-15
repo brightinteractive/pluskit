@@ -38,6 +38,7 @@ export function renderMiddleware(buildDir: string, opts: ServeOpts = {}): Reques
             <meta charSet="utf8" />
             {output.title && <title>{output.title}</title>}
             <script async defer src="/bundle.js" />
+            <link rel="stylesheet" href="/style.css" />
             {opts.head && (opts.head.props as any).children}
           </head>
         )
