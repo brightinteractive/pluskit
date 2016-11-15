@@ -58,19 +58,19 @@ export function webpackConfig(opts: WebpackOpts): {} {
         },
         {
           test: /\.scss$/,
-          loader: opts.extractStyles ? ExtractTextPlugin.extract({
-            fallbackLoader: 'style-loader',
-            loader: scssLoader,
-            allChunks: true,
-          }) : 'style-loader!' + scssLoader
+          loader: (
+            opts.extractStyles
+            ? ExtractTextPlugin.extract(scssLoader)
+            : `style-loader!${scssLoader}`
+          )
         },
         {
           test: /\.css$/,
-          loader: opts.extractStyles ? ExtractTextPlugin.extract({
-            fallbackLoader: 'style-loader',
-            loader: 'css-loader!postcss-loader',
-            allChunks: true,
-          }) : 'style-loader!css-loader!postcss-loader'
+          loader: (
+            opts.extractStyles
+            ? ExtractTextPlugin.extract('css-loader!postcss-loader')
+            : 'style-loader!css-loader!postcss-loader'
+          )
         },
         {
           test: /\.(jpg|png|svg)$/,
