@@ -24,7 +24,7 @@ const browserConfig = webpackConfig({
   entry: clientSource[0],
   extractStyles: true,
   includedModules: [],
-  minify: false,
+  minify: true,
   outDir: path.join(outDir, 'public'),
   target: 'web'
 })
